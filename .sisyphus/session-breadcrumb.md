@@ -5217,3 +5217,12 @@
   - When the local browser session is free, visually smoke `Npcink AI -> Core
     -> Settings -> Advanced Access -> Client Access Tokens` and confirm the
     purpose presets plus advanced section match the intended operator flow.
+# 2026-09-04 - Release packaging gate hardening
+
+- **Module**: Release metadata, Plugin Check gate, and ZIP packaging verification.
+- **Completed**:
+  - Bumped the unreleased Core line to `0.2.0` and updated the active version matrix to Toolkit `0.5.3`.
+  - Added strict Plugin Check result parsing that fails on ERROR or WARNING findings.
+  - Changed release preparation to run static gates before packaging and Plugin Check against the extracted final ZIP.
+- **Verification**: `composer validate --no-check-publish`, `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed.
+- **Next gate**: Bind every action in a `plan_to_proposal_batch` to its own ability contract fingerprint and preflight verification.

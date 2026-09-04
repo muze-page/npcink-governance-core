@@ -287,7 +287,7 @@ $wp_readme = npcink_governance_core_read( $root . '/readme.txt' );
 foreach (
 	array(
 		'=== Npcink Governance Core ===',
-		'Stable tag: 0.1.1',
+		'Stable tag: 0.2.0',
 		'Npcink AI governance layer for WordPress operations.',
 		'= What Core does =',
 		'= Who should use this plugin =',
@@ -301,7 +301,7 @@ foreach (
 		'Core does not call external AI services and does not send site data to third parties.',
 		'Third-party providers can expose WordPress Abilities API definitions',
 		'Requires at least: 7.0',
-		'Tested up to: 7.0',
+		'Tested up to: 7.1',
 		'Requires PHP: 8.0',
 		'License: GPLv2 or later',
 		'== Description ==',
@@ -904,9 +904,9 @@ foreach (
 		'npcink-governance-core',
 		'npcink-ai-client-adapter',
 		'npcink-abilities-toolkit',
-		'0.1.1',
+		'0.2.0',
 		'0.3.2',
-		'0.5.2',
+		'0.5.3',
 		'must not be moved',
 		'--require-tag-ready',
 		'stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2',
@@ -1782,6 +1782,15 @@ foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 
 $composer_data = json_decode( $composer_json, true );
 npcink_governance_core_assert( is_array( $composer_data ), 'Composer JSON parses for script contract checks.' );
 $composer_scripts = is_array( $composer_data['scripts'] ?? null ) ? $composer_data['scripts'] : array();
+npcink_governance_core_assert( 'bash scripts/plugin-check-release.sh' === (string) ( $composer_scripts['plugin-check:release'] ?? '' ), 'Release Plugin Check uses the strict result parser.' );
+$plugin_check_script = npcink_governance_core_read( $root . '/scripts/plugin-check-release.sh' );
+npcink_governance_core_assert( false !== strpos( $plugin_check_script, '--format=strict-json' ), 'Release Plugin Check requests strict JSON.' );
+npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'scripts,stubs' ), 'Release Plugin Check excludes analysis-only stubs.' );
+npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'ERROR' ) && false !== strpos( $plugin_check_script, 'WARNING' ), 'Release Plugin Check blocks errors and warnings.' );
+npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'No errors found.' ), 'Release Plugin Check accepts the clean success response.' );
+$prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare-release.sh' );
+npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
+npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
 npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );
