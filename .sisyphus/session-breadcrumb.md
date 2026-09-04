@@ -5274,3 +5274,9 @@
 - **Completed**: Added ADR-009 freezing new domain-specific plan ids, schemas, previews, and workflow semantics in Core for the 0.2.x line; migration target is a provider-neutral governance envelope owned by provider/integration repositories.
 - **Verification**: `composer test:all` and `composer analyse:phpstan` passed.
 - **Next gate**: Cross-repository matrix and acceptance after all participating repositories are clean and version-pinned.
+
+# 2026-09-04 - Core release candidate verification complete
+
+- **Evidence**: Full `bash scripts/prepare-release.sh --version 0.2.0` passed, including real WordPress smoke and strict Plugin Check against the extracted final ZIP.
+- **Artifact**: `build/npcink-governance-core.zip`, SHA-256 `dafb955487334c0020d9c488853c1058eea14c0fb5ceb28543f993c5d7b49d2b`.
+- **Remaining blocker**: Central cross-repository matrix remains `not_run` because Toolkit, Adapter, Workflow Toolbox, Cloud Add-on, and Cloud worktrees contain uncommitted changes.
