@@ -917,10 +917,10 @@ foreach (
 		'npcink-abilities-toolkit',
 		'0.2.0',
 		'0.3.2',
-		'0.5.3',
+		'0.5.4',
 		'must not be moved',
 		'--require-tag-ready',
-		'stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2',
+		'stack-rc-2026-09-04-core-0.2.0-adapter-0.3.2-toolkit-0.5.4',
 		'The matrix must not become a dependency resolver',
 	) as $required
 ) {
