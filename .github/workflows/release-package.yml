@@ -43,8 +43,14 @@ jobs:
       - name: Validate Composer metadata
         run: composer validate --no-check-publish
 
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist
+
       - name: Run static contracts
         run: composer test:all
+
+      - name: Run PHPStan
+        run: composer analyse:phpstan
 
       - name: Run WordPress.org review guard
         run: composer check:wporg
@@ -89,6 +95,16 @@ jobs:
             exit 1
           fi
           test -f build/npcink-governance-core/npcink-governance-core.php
+          for forbidden in tests docs scripts stubs vendor .git .github; do
+            if unzip -Z1 build/npcink-governance-core.zip | grep -E "^npcink-governance-core/${forbidden}(/|$)" >/dev/null; then
+              echo "Package contains forbidden release directory: $forbidden" >&2
+              exit 1
+            fi
+          done
+          test -f build/npcink-governance-core/uninstall.php
+
+      - name: Record package checksum
+        run: sha256sum build/npcink-governance-core.zip
 
       - name: Upload release package artifact
         uses: actions/upload-artifact@v7

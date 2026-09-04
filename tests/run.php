@@ -1837,6 +1837,10 @@ $core_ci = npcink_governance_core_read( $root . '/.github/workflows/ci.yml' );
 foreach ( array( 'composer install --no-interaction --no-progress --prefer-dist', 'composer test:all', 'composer analyse:phpstan', 'composer check:wporg' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $core_ci, $required ), 'Core CI includes required static gate: ' . $required );
 }
+$release_workflow = npcink_governance_core_read( $root . '/.github/workflows/release-package.yml' );
+foreach ( array( 'composer install --no-interaction --no-progress --prefer-dist', 'composer analyse:phpstan', 'forbidden in tests docs scripts stubs vendor', 'sha256sum build/npcink-governance-core.zip' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $release_workflow, $required ), 'Release workflow includes final package gate: ' . $required );
+}
 $phpstan_config = npcink_governance_core_read( $root . '/phpstan.neon.dist' );
 foreach ( array( 'vendor/szepeviktor/phpstan-wordpress/extension.neon', 'level: 0', 'includes/', 'stubs/npcink-abilities-toolkit.stub.php' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $phpstan_config, $required ), 'PHPStan config keeps required WordPress/Core analysis contract: ' . $required );

@@ -5280,3 +5280,10 @@
 - **Evidence**: Full `bash scripts/prepare-release.sh --version 0.2.0` passed, including real WordPress smoke and strict Plugin Check against the extracted final ZIP.
 - **Artifact**: `build/npcink-governance-core.zip`, SHA-256 `dafb955487334c0020d9c488853c1058eea14c0fb5ceb28543f993c5d7b49d2b`.
 - **Remaining blocker**: Central cross-repository matrix remains `not_run` because Toolkit, Adapter, Workflow Toolbox, Cloud Add-on, and Cloud worktrees contain uncommitted changes.
+
+# 2026-09-04 - CI release workflow parity
+
+- **Module**: GitHub release-package workflow.
+- **Completed**: Added Composer dependency installation, PHPStan, forbidden-directory checks, uninstall entry-point verification, and ZIP checksum output to the CI packaging job. Runtime WordPress smoke remains in the local release gate where the configured WordPress environment exists.
+- **Verification**: `composer test:all` and `composer validate --no-check-publish` passed locally.
+- **Next gate**: Run the central cross-repository matrix after external repositories are clean.
