@@ -1802,6 +1802,10 @@ npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'No error
 $prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare-release.sh' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
+$proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
+$preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batch_action_guardrails' ), 'Batch proposals persist per-action governance guardrails.' );
+npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
 npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );
