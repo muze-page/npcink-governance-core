@@ -5255,3 +5255,8 @@
   - Documented that deactivation preserves records and this release has no destructive uninstall cleanup.
 - **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed.
 - **Next gate**: Run final cross-repository matrix only after Core/Adapter/Toolkit checkouts are clean and pinned to the intended release tags.
+
+# 2026-09-04 - Cross-repository release gate blocked
+
+- **Evidence**: `composer rc:version-matrix` stopped because the Adapter worktree contains uncommitted changes and an untracked `uninstall.php`/release script. No other repository was modified by this session.
+- **Required next action**: The owner must finish or commit the Adapter changes, then rerun the central matrix and cross-repo acceptance against exact Core `0.2.0`, Adapter `0.3.2`, and Toolkit `0.5.3` candidates.
