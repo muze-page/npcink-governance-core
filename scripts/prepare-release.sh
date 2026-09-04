@@ -113,7 +113,8 @@ fi
 echo "Release version: $header_version"
 
 composer validate --no-check-publish
-composer release:verify
+composer test:all
+composer check:wporg
 
 if [[ "$SKIP_SMOKE" == "1" ]]; then
 	echo "Skipping composer smoke:wp because --skip-smoke was passed."
@@ -138,5 +139,26 @@ if [[ ! -f "$ROOT_DIR/build/$PLUGIN_SLUG/$PLUGIN_SLUG.php" ]]; then
 	echo "Package build directory is missing $PLUGIN_SLUG/$PLUGIN_SLUG.php." >&2
 	exit 1
 fi
+
+# Run the release-only Plugin Check against the exact files that will be shipped.
+package_check_root="$(mktemp -d "${TMPDIR:-/tmp}/npcink-governance-core-package.XXXXXX")"
+package_check_link="${WP_PATH:-/Users/muze/Local Sites/magick-ai/app/public}/wp-content/plugins/$PLUGIN_SLUG"
+package_check_backup="${package_check_link}.release-backup"
+cleanup_package_check() {
+	rm -rf "$package_check_root"
+	if [[ -e "$package_check_backup" || -L "$package_check_backup" ]]; then
+		if [[ -e "$package_check_link" || -L "$package_check_link" ]]; then
+			rm -f "$package_check_link"
+		fi
+		mv "$package_check_backup" "$package_check_link"
+	fi
+}
+trap cleanup_package_check EXIT
+
+unzip -q "$ZIP_FILE" -d "$package_check_root"
+if [[ -e "$package_check_link" || -L "$package_check_link" ]]; then
+	mv "$package_check_link" "$package_check_backup"
+fi
+PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release
 
 echo "Release package ready: $ZIP_FILE"

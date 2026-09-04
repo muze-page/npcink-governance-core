@@ -11,9 +11,9 @@ The current stack-level RC candidate is:
 
 | Repository | Role | Expected plugin version | Conventional release tag | Tag readiness |
 | --- | --- | --- | --- | --- |
-| `npcink-governance-core` | Governance layer | `0.1.1` | `v0.1.1` | Available if the current Core commit is the release candidate. |
+| `npcink-governance-core` | Governance layer | `0.2.0` | `v0.2.0` | Available if the current Core commit is the release candidate. |
 | `npcink-ai-client-adapter` | Thin channel layer | `0.3.2` | `v0.3.2` | Available if the current Adapter commit is the release candidate. |
-| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.2` | `0.5.2` | Available if the current Toolkit commit is the release candidate. |
+| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.3` | `0.5.3` | Available if the current Toolkit commit is the release candidate. |
 
 Run the machine check from Core:
 
@@ -38,8 +38,8 @@ paths before final publication:
    snapshot tag that is not the conventional release tag.
 
 The previous Core `v0.1.0`, Adapter `v0.3.1`, and Toolkit `0.5.1` tags are
-historical and must not be moved. The current matrix uses patch versions
-`0.1.1`, `0.3.2`, and `0.5.2` so final conventional release tags can be
+historical and must not be moved. The current matrix uses versions
+`0.2.0`, `0.3.2`, and `0.5.3` so final conventional release tags can be
 created after the full release gate passes.
 
 ## Required Gate Before Any Tag
