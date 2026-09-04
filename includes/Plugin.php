@@ -589,7 +589,7 @@ final class Plugin {
 	 */
 	public function history_cleanup_service(): History_Cleanup_Service {
 		if ( null === $this->history_cleanup_service ) {
-			$this->history_cleanup_service = new History_Cleanup_Service( $this->proposal_repository(), $this->app_key_repository(), $this->audit_repository() );
+			$this->history_cleanup_service = new History_Cleanup_Service( $this->proposal_repository(), $this->app_key_repository(), $this->audit_repository(), $this->read_request_repository(), $this->app_rate_limiter() );
 		}
 
 		return $this->history_cleanup_service;

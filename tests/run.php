@@ -1804,8 +1804,10 @@ npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+$authenticator_source = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batch_action_guardrails' ), 'Batch proposals persist per-action governance guardrails.' );
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
+npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );
@@ -2932,6 +2934,8 @@ npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'core
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_historical_before' ), 'History cleanup service deletes old historical proposal rows.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_revoked_before' ), 'History cleanup service deletes old revoked token rows.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_access_events_before' ), 'History cleanup service deletes old low-value audit access events.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_historical_before' ), 'History cleanup service deletes terminal sensitive read requests.' );
+npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'delete_expired_before' ), 'History cleanup service deletes expired rate-limit windows.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'deleted_audit_events' ), 'History cleanup service reports deleted audit event counts.' );
 npcink_governance_core_assert( false !== strpos( $history_cleanup_service, 'commit_execution' ) && false !== strpos( $history_cleanup_service, 'core_execution' ), 'History cleanup audit explicitly stays outside final execution.' );
 npcink_governance_core_assert( false !== strpos( $plugin_bootstrap, 'HISTORY_CLEANUP_HOOK' ), 'Plugin registers a named bounded history cleanup hook.' );

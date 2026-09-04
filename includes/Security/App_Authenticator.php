@@ -284,7 +284,7 @@ final class App_Authenticator {
 	}
 
 	/**
-	 * Returns a non-reversible hash of the request IP when available.
+	 * Returns a site-keyed HMAC of the request IP when available.
 	 *
 	 * @return string
 	 */
@@ -294,7 +294,8 @@ final class App_Authenticator {
 			return '';
 		}
 
-		return hash( 'sha256', $remote_addr );
+		$key = function_exists( 'wp_salt' ) ? wp_salt( 'auth' ) : ( defined( 'AUTH_KEY' ) ? AUTH_KEY : '' );
+		return hash_hmac( 'sha256', $remote_addr, (string) $key );
 	}
 
 	/**

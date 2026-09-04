@@ -224,7 +224,7 @@ Purpose: stores scoped app identities for external governance clients.
 | `rate_window_seconds` | `int unsigned` | no | Fixed-window duration. |
 | `caller_type` | `varchar(80)` | no | Sanitized caller type such as `mcp_adapter`. |
 | `expires_at` | `datetime` | yes | Optional UTC expiry. Expired keys fail app authentication. |
-| `last_used_ip_hash` | `varchar(64)` | no | Non-reversible hash of the last successful request IP, when available. |
+| `last_used_ip_hash` | `varchar(64)` | no | Site-keyed HMAC of the last successful request IP, when available; the raw address is never stored. |
 | `revoked_at` | `datetime` | yes | UTC time the key was manually revoked. |
 | `revoked_reason` | `text` | yes | Optional administrator or system revocation reason. |
 | `hash_algorithm_version` | `varchar(80)` | no | Hash algorithm label for future migration evidence. |

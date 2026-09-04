@@ -150,6 +150,38 @@ final class Read_Request_Repository {
 	}
 
 	/**
+	 * Deletes terminal sensitive read requests older than the retention cutoff.
+	 *
+	 * @param string $cutoff UTC cutoff.
+	 * @param int    $limit Maximum rows.
+	 * @return int|null Deleted rows, or null on database error.
+	 */
+	public function delete_historical_before( string $cutoff, int $limit = 200 ): ?int {
+		global $wpdb;
+		$limit = max( 1, min( 1000, $limit ) );
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- bounded cleanup for a Core-owned table.
+		$deleted = $wpdb->query(
+			$wpdb->prepare(
+				'DELETE FROM %i WHERE created_at < %s AND status IN (%s, %s, %s) LIMIT %d',
+				$this->table_name(),
+				sanitize_text_field( $cutoff ),
+				self::STATUS_REJECTED,
+				self::STATUS_EXPIRED,
+				self::STATUS_CONSUMED,
+				$limit
+			)
+		);
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+		return false === $deleted ? null : (int) $deleted;
+	}
+
+	/** @param string $cutoff UTC cutoff. */
+	public function count_historical_before( string $cutoff ): int {
+		global $wpdb;
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE created_at < %s AND status IN (%s, %s, %s)', $this->table_name(), sanitize_text_field( $cutoff ), self::STATUS_REJECTED, self::STATUS_EXPIRED, self::STATUS_CONSUMED ) );
+	}
+
+	/**
 	 * Finds one request.
 	 *
 	 * @param string $request_id Request id.
