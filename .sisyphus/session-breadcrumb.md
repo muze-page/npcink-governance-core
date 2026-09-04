@@ -5260,3 +5260,10 @@
 
 - **Evidence**: `composer rc:version-matrix` stopped because the Adapter worktree contains uncommitted changes and an untracked `uninstall.php`/release script. No other repository was modified by this session.
 - **Required next action**: The owner must finish or commit the Adapter changes, then rerun the central matrix and cross-repo acceptance against exact Core `0.2.0`, Adapter `0.3.2`, and Toolkit `0.5.3` candidates.
+
+# 2026-09-04 - Explicit uninstall policy
+
+- **Module**: Plugin uninstall lifecycle and final package checks.
+- **Completed**: Added an explicit no-op `uninstall.php` that preserves governance records and is protected against direct access. Fixed strict Plugin Check suppression coverage for cleanup count queries.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed, including Plugin Check against the extracted ZIP.
+- **Next gate**: Cross-repository release matrix remains pending on external Adapter worktree cleanliness.

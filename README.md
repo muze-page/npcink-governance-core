@@ -40,7 +40,8 @@ This plugin does not own:
   existing site and new sites are provisioned during initialization.
 - Deactivation preserves governance records. There is no automatic uninstall
   deletion policy in this release because audit and approval history may be
-  subject to site retention requirements.
+  subject to site retention requirements. The explicit `uninstall.php` entry
+  point is intentionally a no-op.
 
 ## MVP REST Surface
 

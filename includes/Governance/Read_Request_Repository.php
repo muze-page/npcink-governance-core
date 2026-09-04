@@ -177,8 +177,10 @@ final class Read_Request_Repository {
 
 	/** @param string $cutoff UTC cutoff. */
 	public function count_historical_before( string $cutoff ): int {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- bounded count for a Core-owned table.
 		global $wpdb;
 		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE created_at < %s AND status IN (%s, %s, %s)', $this->table_name(), sanitize_text_field( $cutoff ), self::STATUS_REJECTED, self::STATUS_EXPIRED, self::STATUS_CONSUMED ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
