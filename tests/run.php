@@ -1796,12 +1796,14 @@ $preflight_service_source = npcink_governance_core_read( $root . '/includes/Gove
 $authenticator_source = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 $plugin_source = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 $uninstall_source = npcink_governance_core_read( $root . '/uninstall.php' );
+$plan_boundary_adr = npcink_governance_core_read( $root . '/docs/decisions/ADR-009-freeze-domain-plan-contracts.md' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batch_action_guardrails' ), 'Batch proposals persist per-action governance guardrails.' );
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
 npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'network_wide' ) && false !== strpos( $plugin_source, 'wp_initialize_site' ), 'Plugin lifecycle provisions multisite tables.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'OPTION_SCHEMA_VERSION' ) && false !== strpos( $plugin_source, 'maybe_upgrade_schema' ), 'Plugin lifecycle persists and checks schema version.' );
 npcink_governance_core_assert( false !== strpos( $uninstall_source, 'WP_UNINSTALL_PLUGIN' ) && false !== strpos( $uninstall_source, 'Intentionally no-op' ), 'Uninstall policy explicitly preserves governance records.' );
+npcink_governance_core_assert( false !== strpos( $plan_boundary_adr, 'will not add new domain-specific plan ids' ) && false !== strpos( $plan_boundary_adr, 'versioned, provider-neutral governance envelope' ), 'Core plan contract boundary is frozen for the 0.2.x line.' );
 npcink_governance_core_assert( isset( $composer_scripts['eval:project:review'] ), 'Composer scripts include optional project eval-lab review command.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], 'task=project_boundary_review_triad' ), 'Project eval-lab review command targets the triad task.' );
 npcink_governance_core_assert( false !== strpos( (string) $composer_scripts['eval:project:review'], '"project=$PWD"' ), 'Project eval-lab review command quotes the project path.' );

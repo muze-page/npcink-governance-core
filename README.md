@@ -177,6 +177,7 @@ Architecture decisions:
 - [ADR-006: Unattended Batch Automation Runtime Boundary](docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md)
 - [ADR-007: Dedicated Local Automation Runtime Owner](docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md)
 - [ADR-008: Fail Closed At Ability Intake](docs/decisions/ADR-008-fail-closed-ability-intake.md)
+- [ADR-009: Freeze Domain-Specific Plan Contracts In Core](docs/decisions/ADR-009-freeze-domain-plan-contracts.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).
