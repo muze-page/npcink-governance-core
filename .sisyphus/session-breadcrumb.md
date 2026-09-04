@@ -5267,3 +5267,10 @@
 - **Completed**: Added an explicit no-op `uninstall.php` that preserves governance records and is protected against direct access. Fixed strict Plugin Check suppression coverage for cleanup count queries.
 - **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed, including Plugin Check against the extracted ZIP.
 - **Next gate**: Cross-repository release matrix remains pending on external Adapter worktree cleanliness.
+
+# 2026-09-04 - Domain plan boundary freeze
+
+- **Module**: Core plan-to-proposal contract ownership boundary.
+- **Completed**: Added ADR-009 freezing new domain-specific plan ids, schemas, previews, and workflow semantics in Core for the 0.2.x line; migration target is a provider-neutral governance envelope owned by provider/integration repositories.
+- **Verification**: `composer test:all` and `composer analyse:phpstan` passed.
+- **Next gate**: Cross-repository matrix and acceptance after all participating repositories are clean and version-pinned.
