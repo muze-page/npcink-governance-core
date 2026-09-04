@@ -135,8 +135,10 @@ final class App_Rate_Limiter {
 
 	/** @param string $cutoff UTC cutoff. */
 	public function count_expired_before( string $cutoff ): int {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- bounded count for a Core-owned table.
 		global $wpdb;
 		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE window_end < %s', $this->table_name(), sanitize_text_field( $cutoff ) ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
 	}
 
 	/**
