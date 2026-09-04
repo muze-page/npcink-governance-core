@@ -9,6 +9,7 @@ namespace Npcink\GovernanceCore\Governance;
 
 use Npcink\GovernanceCore\Audit\Audit_Log_Repository;
 use Npcink\GovernanceCore\Security\App_Key_Repository;
+use Npcink\GovernanceCore\Security\App_Rate_Limiter;
 use WP_Error;
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -45,6 +46,12 @@ final class History_Cleanup_Service {
 	 */
 	private $audit;
 
+	/** @var Read_Request_Repository|null */
+	private $read_requests;
+
+	/** @var App_Rate_Limiter|null */
+	private $rate_limiter;
+
 	/**
 	 * Constructor.
 	 *
@@ -52,10 +59,12 @@ final class History_Cleanup_Service {
 	 * @param App_Key_Repository   $apps App key repository.
 	 * @param Audit_Log_Repository $audit Audit repository.
 	 */
-	public function __construct( Proposal_Repository $proposals, App_Key_Repository $apps, Audit_Log_Repository $audit ) {
+	public function __construct( Proposal_Repository $proposals, App_Key_Repository $apps, Audit_Log_Repository $audit, ?Read_Request_Repository $read_requests = null, ?App_Rate_Limiter $rate_limiter = null ) {
 		$this->proposals = $proposals;
 		$this->apps      = $apps;
 		$this->audit     = $audit;
+		$this->read_requests = $read_requests;
+		$this->rate_limiter  = $rate_limiter;
 	}
 
 	/**
@@ -121,6 +130,8 @@ final class History_Cleanup_Service {
 		$planned_proposals  = $this->proposals->count_historical_before( $cutoff );
 		$planned_app_keys   = $this->apps->count_revoked_before( $cutoff );
 		$planned_audit_events = $this->audit->count_access_events_before( $cutoff );
+		$planned_read_requests = null !== $this->read_requests ? $this->read_requests->count_historical_before( $cutoff ) : 0;
+		$planned_rate_windows  = null !== $this->rate_limiter ? $this->rate_limiter->count_expired_before( $cutoff ) : 0;
 		$requested_event_id = $this->audit->record(
 			'core.history_cleanup_requested',
 			array(
@@ -130,6 +141,8 @@ final class History_Cleanup_Service {
 				'planned_proposals'      => $planned_proposals,
 				'planned_app_keys'       => $planned_app_keys,
 				'planned_audit_events'   => $planned_audit_events,
+				'planned_read_requests'  => $planned_read_requests,
+				'planned_rate_windows'   => $planned_rate_windows,
 				'batch_limit'            => self::CLEANUP_BATCH_LIMIT,
 				'commit_execution'       => false,
 				'core_execution'         => false,
@@ -147,7 +160,9 @@ final class History_Cleanup_Service {
 		$deleted_proposals = $this->proposals->delete_historical_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
 		$deleted_app_keys  = $this->apps->delete_revoked_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
 		$deleted_audit_events = $this->audit->delete_access_events_before( $cutoff, self::CLEANUP_BATCH_LIMIT );
-		if ( null === $deleted_proposals || null === $deleted_app_keys || null === $deleted_audit_events ) {
+		$deleted_read_requests = null !== $this->read_requests ? $this->read_requests->delete_historical_before( $cutoff, self::CLEANUP_BATCH_LIMIT ) : 0;
+		$deleted_rate_windows  = null !== $this->rate_limiter ? $this->rate_limiter->delete_expired_before( $cutoff, self::CLEANUP_BATCH_LIMIT ) : 0;
+		if ( null === $deleted_proposals || null === $deleted_app_keys || null === $deleted_audit_events || null === $deleted_read_requests || null === $deleted_rate_windows ) {
 			$this->audit->record(
 				'core.history_cleanup_failed',
 				array(
@@ -158,6 +173,8 @@ final class History_Cleanup_Service {
 					'deleted_proposals'      => null === $deleted_proposals ? 0 : $deleted_proposals,
 					'deleted_app_keys'       => null === $deleted_app_keys ? 0 : $deleted_app_keys,
 					'deleted_audit_events'   => null === $deleted_audit_events ? 0 : $deleted_audit_events,
+					'deleted_read_requests'  => null === $deleted_read_requests ? 0 : $deleted_read_requests,
+					'deleted_rate_windows'   => null === $deleted_rate_windows ? 0 : $deleted_rate_windows,
 					'commit_execution'       => false,
 					'core_execution'         => false,
 				)
@@ -180,6 +197,8 @@ final class History_Cleanup_Service {
 				'deleted_proposals'      => $deleted_proposals,
 				'deleted_app_keys'       => $deleted_app_keys,
 				'deleted_audit_events'   => $deleted_audit_events,
+				'deleted_read_requests'  => $deleted_read_requests,
+				'deleted_rate_windows'   => $deleted_rate_windows,
 				'batch_limit'            => self::CLEANUP_BATCH_LIMIT,
 				'commit_execution'       => false,
 				'core_execution'         => false,
@@ -202,6 +221,8 @@ final class History_Cleanup_Service {
 			'deleted_proposals'      => $deleted_proposals,
 			'deleted_app_keys'       => $deleted_app_keys,
 			'deleted_audit_events'   => $deleted_audit_events,
+			'deleted_read_requests'  => $deleted_read_requests,
+			'deleted_rate_windows'   => $deleted_rate_windows,
 			'requested_event_id'     => $requested_event_id,
 			'completed_event_id'     => $completed_event_id,
 		);

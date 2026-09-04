@@ -5236,3 +5236,12 @@
   - Added WordPress smoke assertions for the second action contract in a heterogeneous batch.
 - **Verification**: `composer test:all`, `composer analyse:phpstan`, and `NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1 composer smoke:wp` passed.
 - **Next gate**: Define and implement data retention cleanup for rate-limit windows and sensitive read requests, then decide privacy/uninstall policy.
+
+# 2026-09-04 - Retention and IP privacy hardening
+
+- **Module**: Governance history cleanup and app authentication metadata.
+- **Completed**:
+  - Added bounded deletion of terminal sensitive read requests and expired rate-limit windows to the existing daily cleanup pass.
+  - Replaced enumerable raw-IP SHA-256 metadata with a site-keyed HMAC while preserving the existing field shape.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and real WordPress smoke passed.
+- **Next gate**: Decide and implement explicit multisite activation/schema upgrade and uninstall/privacy lifecycle policy.
