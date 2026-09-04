@@ -1802,6 +1802,8 @@ npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'No error
 $prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare-release.sh' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
+$version_matrix_script = npcink_governance_core_read( $root . '/scripts/check-release-candidate-version-matrix.sh' );
+npcink_governance_core_assert( false !== strpos( $version_matrix_script, '[[ ! -f "$root/.git" ]]' ), 'Release candidate version matrix supports Git worktrees.' );
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
 $authenticator_source = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );

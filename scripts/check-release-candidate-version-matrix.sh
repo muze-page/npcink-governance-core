@@ -63,7 +63,7 @@ done
 require_repo() {
 	local label="$1"
 	local root="$2"
-	if [[ ! -d "$root/.git" ]]; then
+	if { [[ ! -d "$root/.git" ]] && [[ ! -f "$root/.git" ]]; }; then
 		echo "$label repository is missing: $root" >&2
 		exit 2
 	fi
