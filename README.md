@@ -36,6 +36,11 @@ This plugin does not own:
 
 - WordPress 7.0+ with WordPress Abilities API available for full ability intake.
 - PHP 8.0+.
+- Multisite is supported; network activation provisions Core tables for every
+  existing site and new sites are provisioned during initialization.
+- Deactivation preserves governance records. There is no automatic uninstall
+  deletion policy in this release because audit and approval history may be
+  subject to site retention requirements.
 
 ## MVP REST Surface
 

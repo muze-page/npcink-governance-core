@@ -293,3 +293,7 @@ evidence; only explicit read/list/view noise such as `proposal.listed`,
 `proposal.viewed`, `audit.listed`, `app.listed`, and read request list/view
 events are eligible for retention cleanup. Local-only runs may still use smoke
 purge helpers for records created by a specific smoke run.
+Core persists `npcink_governance_core_schema_version` per site. Activation and
+the normal plugin load path run idempotent `dbDelta` installation when this
+value is missing or stale. Network activation provisions each existing site,
+and `wp_initialize_site` provisions new sites.
