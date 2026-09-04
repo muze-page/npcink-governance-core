@@ -5245,3 +5245,13 @@
   - Replaced enumerable raw-IP SHA-256 metadata with a site-keyed HMAC while preserving the existing field shape.
 - **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and real WordPress smoke passed.
 - **Next gate**: Decide and implement explicit multisite activation/schema upgrade and uninstall/privacy lifecycle policy.
+
+# 2026-09-04 - Multisite and schema lifecycle
+
+- **Module**: Plugin activation, site initialization, and schema version tracking.
+- **Completed**:
+  - Network activation provisions all existing sites and `wp_initialize_site` provisions new sites.
+  - Persisted per-site schema version and idempotent upgrade check on normal plugin load.
+  - Documented that deactivation preserves records and this release has no destructive uninstall cleanup.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed.
+- **Next gate**: Run final cross-repository matrix only after Core/Adapter/Toolkit checkouts are clean and pinned to the intended release tags.
