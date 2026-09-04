@@ -5226,3 +5226,13 @@
   - Changed release preparation to run static gates before packaging and Plugin Check against the extracted final ZIP.
 - **Verification**: `composer validate --no-check-publish`, `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed.
 - **Next gate**: Bind every action in a `plan_to_proposal_batch` to its own ability contract fingerprint and preflight verification.
+
+# 2026-09-04 - Batch proposal contract binding
+
+- **Module**: Plan-to-proposal batch creation and approval commit preflight.
+- **Completed**:
+  - Persisted one ability contract hash/fingerprint per ordered batch action.
+  - Re-discovered every batch action ability during preflight and fail closed on missing, changed, or mismatched contracts.
+  - Added WordPress smoke assertions for the second action contract in a heterogeneous batch.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and `NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1 composer smoke:wp` passed.
+- **Next gate**: Define and implement data retention cleanup for rate-limit windows and sensitive read requests, then decide privacy/uninstall policy.

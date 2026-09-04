@@ -170,6 +170,22 @@ final class Commit_Preflight_Service {
 			);
 		}
 
+		$batch_contract_preflight = $this->batch_ability_contract_preflight( $proposal );
+		if ( false === (bool) ( $batch_contract_preflight['contract_matches'] ?? true ) ) {
+			return $this->preflight_error(
+				'npcink_governance_core_ability_contract_changed',
+				__( 'A proposal batch action ability contract has changed since approval.', 'npcink-governance-core' ),
+				409,
+				$proposal_id,
+				array(
+					'ability_id'         => (string) ( $proposal['ability_id'] ?? '' ),
+					'status'             => (string) ( $proposal['status'] ?? '' ),
+					'batch_contract_preflight' => $batch_contract_preflight,
+					'idempotency_required' => true,
+				)
+			);
+		}
+
 		$permission_preflight = $this->ability_permission_preflight( $capability );
 		if ( false === (bool) ( $permission_preflight['allowed'] ?? false ) ) {
 			return $this->preflight_error(
@@ -498,6 +514,56 @@ final class Commit_Preflight_Service {
 			'approved_contract'      => is_array( $guardrails['ability_contract'] ?? null ) ? $guardrails['ability_contract'] : array(),
 			'current_contract'       => $this->ability_contract_fingerprint( $capability ),
 		);
+	}
+
+	/**
+	 * Revalidates every action contract captured in a batch proposal.
+	 *
+	 * @param array<string,mixed> $proposal Proposal row.
+	 * @return array<string,mixed>
+	 */
+	private function batch_ability_contract_preflight( array $proposal ): array {
+		$caller    = is_array( $proposal['caller'] ?? null ) ? $proposal['caller'] : array();
+		$guardrail = is_array( $caller['core_guardrails'] ?? null ) ? $caller['core_guardrails'] : array();
+		$approved  = is_array( $guardrail['batch_action_guardrails'] ?? null ) ? array_values( $guardrail['batch_action_guardrails'] ) : array();
+		$actions   = is_array( $proposal['input']['write_actions'] ?? null ) ? array_values( $proposal['input']['write_actions'] ) : array();
+		if ( empty( $approved ) || empty( $actions ) ) {
+			return array( 'contract_matches' => true, 'actions' => array() );
+		}
+
+		$current = array();
+		$matches = true;
+		foreach ( $actions as $index => $action ) {
+			if ( ! is_array( $action ) ) {
+				$matches = false;
+				continue;
+			}
+			$action_id = sanitize_key( (string) ( $action['action_id'] ?? '' ) );
+			$action_index = absint( $action['action_index'] ?? $index );
+			$approved_row = null;
+			foreach ( $approved as $row ) {
+				if ( is_array( $row ) && $action_index === absint( $row['action_index'] ?? -1 ) && $action_id === sanitize_key( (string) ( $row['action_id'] ?? '' ) ) ) {
+					$approved_row = $row;
+					break;
+				}
+			}
+			$target_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			$capability = $this->abilities->find( $target_id );
+			$hash = null !== $capability ? $this->ability_contract_hash( $capability ) : '';
+			$match = is_array( $approved_row )
+				&& $target_id === (string) ( $approved_row['target_ability_id'] ?? '' )
+				&& $hash === (string) ( $approved_row['ability_contract_hash'] ?? '' );
+			$matches = $matches && $match;
+			$current[] = array(
+				'action_id' => $action_id,
+				'action_index' => $action_index,
+				'target_ability_id' => $target_id,
+				'contract_hash' => $hash,
+				'matches' => $match,
+			);
+		}
+
+		return array( 'contract_matches' => $matches, 'actions' => $current );
 	}
 
 	/**

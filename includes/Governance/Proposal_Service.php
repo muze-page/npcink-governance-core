@@ -155,6 +155,9 @@ final class Proposal_Service {
 		}
 
 		$guardrail = $this->proposal_create_guardrail( $ability_id, $input, $capability );
+		if ( ! empty( $input['write_actions'] ) && is_array( $input['write_actions'] ) ) {
+			$guardrail['batch_action_guardrails'] = $this->batch_action_guardrails( $input['write_actions'] );
+		}
 		$caller['core_guardrails'] = $guardrail;
 		$policy = $this->policy_evaluator->evaluate(
 			array(
@@ -684,6 +687,37 @@ final class Proposal_Service {
 			'ability_contract_hash' => $this->ability_contract_hash( $capability ),
 			'ability_contract'      => $this->ability_contract_fingerprint( $capability ),
 		);
+	}
+
+	/**
+	 * Captures an independent contract snapshot for every ordered batch action.
+	 *
+	 * @param array<int,mixed> $actions Ordered write actions.
+	 * @return array<int,array<string,mixed>>
+	 */
+	private function batch_action_guardrails( array $actions ): array {
+		$guardrails = array();
+		foreach ( array_values( $actions ) as $index => $action ) {
+			if ( ! is_array( $action ) ) {
+				continue;
+			}
+			$target_id = sanitize_text_field( (string) ( $action['target_ability_id'] ?? '' ) );
+			$target    = $this->abilities->find( $target_id );
+			if ( null === $target ) {
+				continue;
+			}
+			$guardrail = $this->proposal_create_guardrail( $target_id, is_array( $action['input'] ?? null ) ? $action['input'] : array(), $target );
+			$guardrails[] = array(
+				'action_id'          => sanitize_key( (string) ( $action['action_id'] ?? '' ) ),
+				'action_index'       => absint( $action['action_index'] ?? $index ),
+				'target_ability_id'  => $target_id,
+				'ability_contract_hash' => (string) $guardrail['ability_contract_hash'],
+				'ability_contract'   => $guardrail['ability_contract'],
+				'input_hash'         => (string) $guardrail['input_hash'],
+				'input_payload_hash' => hash( 'sha256', (string) wp_json_encode( is_array( $action['input'] ?? null ) ? $action['input'] : array() ) ),
+			);
+		}
+		return $guardrails;
 	}
 
 	/**
