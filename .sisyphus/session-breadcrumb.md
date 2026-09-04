@@ -5287,3 +5287,10 @@
 - **Completed**: Added Composer dependency installation, PHPStan, forbidden-directory checks, uninstall entry-point verification, and ZIP checksum output to the CI packaging job. Runtime WordPress smoke remains in the local release gate where the configured WordPress environment exists.
 - **Verification**: `composer test:all` and `composer validate --no-check-publish` passed locally.
 - **Next gate**: Run the central cross-repository matrix after external repositories are clean.
+
+# 2026-09-04 - Active release documentation version sync
+
+- **Module**: REST contract and WordPress.org release instructions.
+- **Completed**: Updated active examples and commands from the historical `0.1.1` release to the current Core `0.2.0` candidate while preserving historical closeout records.
+- **Verification**: `composer test:all` and `composer validate --no-check-publish` passed.
+- **Next gate**: Cross-repository matrix remains blocked by dirty external worktrees.
