@@ -37,7 +37,7 @@ $base = array(
 	'docker_server_version' => '29.7.2',
 	'generated_at'          => gmdate( 'Y-m-d\TH:i:s\Z' ),
 	'profiles'              => array(
-		'wordpress-6.9.4-php-8.0' => array( 'wordpress' => '6.9.4', 'php' => '8.0', 'assertions' => 1, 'installed_from_zip' => true, 'status' => 'passed' ),
+		'wordpress-7.0-php-8.0' => array( 'wordpress' => '7.0', 'php' => '8.0', 'assertions' => 1, 'installed_from_zip' => true, 'status' => 'passed' ),
 		'wordpress-7.0-php-8.5'  => array( 'wordpress' => '7.0', 'php' => '8.5', 'assertions' => 1, 'installed_from_zip' => true, 'status' => 'passed' ),
 	),
 );
@@ -72,7 +72,7 @@ $missing_profile                                         = $base;
 unset( $missing_profile['profiles']['wordpress-7.0-php-8.5'] );
 $invalid_cases['missing profile']                        = $missing_profile;
 $not_packaged                                            = $base;
-$not_packaged['profiles']['wordpress-6.9.4-php-8.0']['installed_from_zip'] = false;
+$not_packaged['profiles']['wordpress-7.0-php-8.0']['installed_from_zip'] = false;
 $invalid_cases['source-mounted profile']                 = $not_packaged;
 
 foreach ( $invalid_cases as $label => $evidence ) {
@@ -111,6 +111,10 @@ if ( false === strpos( $runner, 'git ls-files -z' ) || false === strpos( $runner
 $profile_runner = file_get_contents( $root . '/scripts/m4-wordpress-package-profile.sh' );
 if ( false === $profile_runner || false === strpos( $profile_runner, 'plugin install' ) || false === strpos( $profile_runner, 'npcink-governance-core.zip --force --activate' ) ) {
 	fwrite( STDERR, "FAIL: Core M4 profile does not install the release ZIP.\n" );
+	exit( 1 );
+}
+if ( false === strpos( $profile_runner, 'runtime_wordpress' ) || false === strpos( $profile_runner, 'runtime_php' ) ) {
+	fwrite( STDERR, "FAIL: Core M4 profile does not verify actual WordPress and PHP versions.\n" );
 	exit( 1 );
 }
 

@@ -227,7 +227,7 @@ identity unless the same source can reproduce it.
 
 Run `composer smoke:wp-m4` only from clean Core and Toolkit checkouts. The
 runner sends Git archives plus the reproducible Core ZIP to the M4 host,
-installs that ZIP into disposable WordPress 6.9.4/PHP 8.0 and WordPress
+installs that ZIP into disposable WordPress 7.0/PHP 8.0 and WordPress
 7.0/PHP 8.5 environments, runs the real Core smoke, and removes both Docker
 projects and the remote temporary directory. The ignored evidence file records
 the exact Core and Toolkit revisions and archive hashes, the Core package hash,

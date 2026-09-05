@@ -75,7 +75,7 @@ if ( false === $generated_at || $generated_at > $now + 300 || $generated_at < $n
 }
 
 $required_profiles = array(
-	'wordpress-6.9.4-php-8.0' => array( 'wordpress' => '6.9.4', 'php' => '8.0' ),
+	'wordpress-7.0-php-8.0' => array( 'wordpress' => '7.0', 'php' => '8.0' ),
 	'wordpress-7.0-php-8.5'  => array( 'wordpress' => '7.0', 'php' => '8.5' ),
 );
 $profiles = is_array( $data['profiles'] ?? null ) ? $data['profiles'] : array();

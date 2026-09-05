@@ -113,7 +113,7 @@ jq -n \
 		docker_server_version: $docker_server_version,
 		generated_at: $generated_at,
 		profiles: {
-			"wordpress-6.9.4-php-8.0": {wordpress: "6.9.4", php: "8.0", assertions: $minimum_assertions, installed_from_zip: true, status: "passed"},
+			"wordpress-7.0-php-8.0": {wordpress: "7.0", php: "8.0", assertions: $minimum_assertions, installed_from_zip: true, status: "passed"},
 			"wordpress-7.0-php-8.5": {wordpress: "7.0", php: "8.5", assertions: $current_assertions, installed_from_zip: true, status: "passed"}
 		}
 	}' > "$OUTPUT_PATH"

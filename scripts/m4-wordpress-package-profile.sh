@@ -6,7 +6,7 @@ TOOLKIT_ROOT="${NPCINK_CORE_M4_TOOLKIT_ROOT:-}"
 CORE_ZIP="${NPCINK_CORE_M4_PACKAGE:-}"
 PROJECT_NAME="${NPCINK_CORE_M4_PROJECT_NAME:-npcink_core_wordpress_smoke}"
 HTTP_PORT="${NPCINK_CORE_M4_HTTP_PORT:-8931}"
-WORDPRESS_VERSION="${NPCINK_CORE_M4_WORDPRESS_VERSION:-6.9.4}"
+WORDPRESS_VERSION="${NPCINK_CORE_M4_WORDPRESS_VERSION:-7.0}"
 PHP_VERSION="${NPCINK_CORE_M4_PHP_VERSION:-8.0}"
 SMOKE_LABEL="${NPCINK_CORE_M4_SMOKE_LABEL:-Minimum}"
 
@@ -38,6 +38,8 @@ CORE_SMOKE_FILE="$CACHE_DIR/npcink-governance-core-smoke-wp.php"
 compose() {
 	COMPOSE_PROJECT_NAME="$PROJECT_NAME" \
 	OFFICIAL_STACK_HTTP_PORT="$HTTP_PORT" \
+	OFFICIAL_STACK_WORDPRESS_IMAGE="wordpress:php$PHP_VERSION-apache" \
+	OFFICIAL_STACK_WPCLI_IMAGE="wordpress:cli-php$PHP_VERSION" \
 		docker compose -f "$COMPOSE_FILE" "$@"
 }
 
@@ -74,6 +76,13 @@ OFFICIAL_STACK_RUN_MCP_HTTP_PROBE=0 \
 
 compose run --rm cli --allow-root plugin install \
 	/official-stack-cache/npcink-governance-core.zip --force --activate >/dev/null
+
+runtime_wordpress="$(compose run --rm cli --allow-root core version | tr -d '\r')"
+runtime_php="$(compose run --rm --entrypoint php cli -r 'echo PHP_MAJOR_VERSION . "." . PHP_MINOR_VERSION;' | tr -d '\r')"
+if [[ "$runtime_wordpress" != "$WORDPRESS_VERSION" || "$runtime_php" != "$PHP_VERSION" ]]; then
+	echo "Expected WordPress $WORDPRESS_VERSION/PHP $PHP_VERSION, found WordPress ${runtime_wordpress:-unknown}/PHP ${runtime_php:-unknown}." >&2
+	exit 1
+fi
 
 installed_version="$(compose run --rm cli --allow-root plugin get npcink-governance-core --field=version | tr -d '\r')"
 if [[ "$installed_version" != "0.2.0" ]]; then
