@@ -224,7 +224,7 @@ Purpose: stores scoped app identities for external governance clients.
 | `rate_window_seconds` | `int unsigned` | no | Fixed-window duration. |
 | `caller_type` | `varchar(80)` | no | Sanitized caller type such as `mcp_adapter`. |
 | `expires_at` | `datetime` | yes | Optional UTC expiry. Expired keys fail app authentication. |
-| `last_used_ip_hash` | `varchar(64)` | no | Non-reversible hash of the last successful request IP, when available. |
+| `last_used_ip_hash` | `varchar(64)` | no | Site-keyed HMAC of the last successful request IP, when available; the raw address is never stored. |
 | `revoked_at` | `datetime` | yes | UTC time the key was manually revoked. |
 | `revoked_reason` | `text` | yes | Optional administrator or system revocation reason. |
 | `hash_algorithm_version` | `varchar(80)` | no | Hash algorithm label for future migration evidence. |
@@ -293,3 +293,7 @@ evidence; only explicit read/list/view noise such as `proposal.listed`,
 `proposal.viewed`, `audit.listed`, `app.listed`, and read request list/view
 events are eligible for retention cleanup. Local-only runs may still use smoke
 purge helpers for records created by a specific smoke run.
+Core persists `npcink_governance_core_schema_version` per site. Activation and
+the normal plugin load path run idempotent `dbDelta` installation when this
+value is missing or stale. Network activation provisions each existing site,
+and `wp_initialize_site` provisions new sites.

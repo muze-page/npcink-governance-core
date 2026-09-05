@@ -39,6 +39,8 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 final class Plugin {
 	const HISTORY_CLEANUP_HOOK = 'npcink_governance_core_history_cleanup';
+	const SCHEMA_VERSION = '1.1.0';
+	const OPTION_SCHEMA_VERSION = 'npcink_governance_core_schema_version';
 
 	/**
 	 * Singleton instance.
@@ -170,13 +172,19 @@ final class Plugin {
 	 *
 	 * @return void
 	 */
-	public static function activate(): void {
-		self::instance()->proposal_repository()->install();
-		self::instance()->read_request_repository()->install();
-		self::instance()->audit_repository()->install();
-		self::instance()->app_key_repository()->install();
-		self::instance()->app_rate_limiter()->install();
-		self::instance()->ensure_history_cleanup_event();
+	public static function activate( bool $network_wide = false ): void {
+		$plugin = self::instance();
+		if ( $network_wide && is_multisite() ) {
+			$sites = get_sites( array( 'fields' => 'ids', 'number' => 0 ) );
+			foreach ( $sites as $blog_id ) {
+				switch_to_blog( (int) $blog_id );
+				$plugin->install_tables_for_current_site();
+				restore_current_blog();
+			}
+		} else {
+			$plugin->install_tables_for_current_site();
+		}
+		$plugin->ensure_history_cleanup_event();
 	}
 
 	/**
@@ -198,10 +206,39 @@ final class Plugin {
 		add_action( self::HISTORY_CLEANUP_HOOK, array( $this, 'run_history_cleanup' ) );
 		add_filter( 'npcink_governance_core_record_local_admin_consent', array( $this, 'record_local_admin_consent_audit' ), 10, 3 );
 		add_filter( 'plugin_action_links_' . plugin_basename( NPCINK_GOVERNANCE_CORE_FILE ), array( $this, 'filter_plugin_action_links' ) );
+		add_action( 'wp_initialize_site', array( $this, 'install_tables_for_new_site' ), 10, 1 );
+		$this->maybe_upgrade_schema();
 		$this->ensure_history_cleanup_event();
 
 		if ( is_admin() ) {
 			( new Admin_Page( $this->ability_adapter(), $this->proposal_repository(), $this->audit_repository(), $this->proposal_service(), $this->app_key_repository(), $this->history_cleanup_service() ) )->register();
+		}
+	}
+
+	/** Installs or upgrades all Core tables for the current site. */
+	public function install_tables_for_current_site(): void {
+		$this->proposal_repository()->install();
+		$this->read_request_repository()->install();
+		$this->audit_repository()->install();
+		$this->app_key_repository()->install();
+		$this->app_rate_limiter()->install();
+		update_option( self::OPTION_SCHEMA_VERSION, self::SCHEMA_VERSION, false );
+	}
+
+	/** @param \WP_Site $site Newly initialized site. */
+	public function install_tables_for_new_site( $site ): void {
+		if ( ! is_multisite() || ! is_object( $site ) || empty( $site->blog_id ) ) {
+			return;
+		}
+		switch_to_blog( (int) $site->blog_id );
+		$this->install_tables_for_current_site();
+		restore_current_blog();
+	}
+
+	/** Installs tables when the persisted schema version is stale or missing. */
+	private function maybe_upgrade_schema(): void {
+		if ( self::SCHEMA_VERSION !== (string) get_option( self::OPTION_SCHEMA_VERSION, '' ) ) {
+			$this->install_tables_for_current_site();
 		}
 	}
 
@@ -589,7 +626,7 @@ final class Plugin {
 	 */
 	public function history_cleanup_service(): History_Cleanup_Service {
 		if ( null === $this->history_cleanup_service ) {
-			$this->history_cleanup_service = new History_Cleanup_Service( $this->proposal_repository(), $this->app_key_repository(), $this->audit_repository() );
+			$this->history_cleanup_service = new History_Cleanup_Service( $this->proposal_repository(), $this->app_key_repository(), $this->audit_repository(), $this->read_request_repository(), $this->app_rate_limiter() );
 		}
 
 		return $this->history_cleanup_service;

@@ -118,6 +118,30 @@ final class App_Rate_Limiter {
 	}
 
 	/**
+	 * Deletes expired fixed-window counters in bounded batches.
+	 *
+	 * @param string $cutoff UTC cutoff.
+	 * @param int    $limit Maximum rows.
+	 * @return int|null Deleted rows, or null on database error.
+	 */
+	public function delete_expired_before( string $cutoff, int $limit = 200 ): ?int {
+		global $wpdb;
+		$limit = max( 1, min( 1000, $limit ) );
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared -- bounded cleanup for a Core-owned table.
+		$deleted = $wpdb->query( $wpdb->prepare( 'DELETE FROM %i WHERE window_end < %s LIMIT %d', $this->table_name(), sanitize_text_field( $cutoff ), $limit ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching,WordPress.DB.PreparedSQL.NotPrepared
+		return false === $deleted ? null : (int) $deleted;
+	}
+
+	/** @param string $cutoff UTC cutoff. */
+	public function count_expired_before( string $cutoff ): int {
+		// phpcs:disable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching -- bounded count for a Core-owned table.
+		global $wpdb;
+		return (int) $wpdb->get_var( $wpdb->prepare( 'SELECT COUNT(*) FROM %i WHERE window_end < %s', $this->table_name(), sanitize_text_field( $cutoff ) ) );
+		// phpcs:enable WordPress.DB.DirectDatabaseQuery.DirectQuery,WordPress.DB.DirectDatabaseQuery.NoCaching
+	}
+
+	/**
 	 * Atomically increments an existing fixed window only while under limit.
 	 *
 	 * @param string $app_id App id.

@@ -1998,6 +1998,9 @@ npcink_governance_core_smoke_assert( 2 === count( $pattern_page_actions ), 'patt
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/create-draft' === (string) ( $pattern_page_actions[0]['target_ability_id'] ?? '' ), 'pattern page first action creates a draft page' );
 npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $pattern_page_actions[1]['target_ability_id'] ?? '' ), 'pattern page second action updates Gutenberg blocks' );
 npcink_governance_core_smoke_assert( '$outputs.create-pattern-page.post_id' === (string) ( $pattern_page_actions[1]['input']['post_id'] ?? '' ), 'pattern page update action preserves output reference' );
+$pattern_page_guardrails = (array) ( $pattern_page_proposal['caller']['core_guardrails']['batch_action_guardrails'] ?? array() );
+npcink_governance_core_smoke_assert( 2 === count( $pattern_page_guardrails ), 'pattern page batch persists one contract guardrail per action' );
+npcink_governance_core_smoke_assert( 'npcink-abilities-toolkit/update-post-blocks' === (string) ( $pattern_page_guardrails[1]['target_ability_id'] ?? '' ), 'pattern page batch persists the second action ability contract' );
 npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $pattern_page_title, 'page' ), 'pattern page from-plan intake does not create the page draft' );
 npcink_governance_core_smoke_approve_and_preflight_plan_proposal( (string) ( $pattern_page_proposal['proposal_id'] ?? '' ) );
 npcink_governance_core_smoke_assert( 0 === npcink_governance_core_smoke_find_post_id_by_title( $pattern_page_title, 'page' ), 'pattern page preflight does not create the page draft' );

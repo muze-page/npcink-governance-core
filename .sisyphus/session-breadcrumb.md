@@ -5217,3 +5217,80 @@
   - When the local browser session is free, visually smoke `Npcink AI -> Core
     -> Settings -> Advanced Access -> Client Access Tokens` and confirm the
     purpose presets plus advanced section match the intended operator flow.
+# 2026-09-04 - Release packaging gate hardening
+
+- **Module**: Release metadata, Plugin Check gate, and ZIP packaging verification.
+- **Completed**:
+  - Bumped the unreleased Core line to `0.2.0` and updated the active version matrix to Toolkit `0.5.3`.
+  - Added strict Plugin Check result parsing that fails on ERROR or WARNING findings.
+  - Changed release preparation to run static gates before packaging and Plugin Check against the extracted final ZIP.
+- **Verification**: `composer validate --no-check-publish`, `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed.
+- **Next gate**: Bind every action in a `plan_to_proposal_batch` to its own ability contract fingerprint and preflight verification.
+
+# 2026-09-04 - Batch proposal contract binding
+
+- **Module**: Plan-to-proposal batch creation and approval commit preflight.
+- **Completed**:
+  - Persisted one ability contract hash/fingerprint per ordered batch action.
+  - Re-discovered every batch action ability during preflight and fail closed on missing, changed, or mismatched contracts.
+  - Added WordPress smoke assertions for the second action contract in a heterogeneous batch.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and `NPCINK_GOVERNANCE_CORE_SMOKE_PURGE=1 composer smoke:wp` passed.
+- **Next gate**: Define and implement data retention cleanup for rate-limit windows and sensitive read requests, then decide privacy/uninstall policy.
+
+# 2026-09-04 - Retention and IP privacy hardening
+
+- **Module**: Governance history cleanup and app authentication metadata.
+- **Completed**:
+  - Added bounded deletion of terminal sensitive read requests and expired rate-limit windows to the existing daily cleanup pass.
+  - Replaced enumerable raw-IP SHA-256 metadata with a site-keyed HMAC while preserving the existing field shape.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and real WordPress smoke passed.
+- **Next gate**: Decide and implement explicit multisite activation/schema upgrade and uninstall/privacy lifecycle policy.
+
+# 2026-09-04 - Multisite and schema lifecycle
+
+- **Module**: Plugin activation, site initialization, and schema version tracking.
+- **Completed**:
+  - Network activation provisions all existing sites and `wp_initialize_site` provisions new sites.
+  - Persisted per-site schema version and idempotent upgrade check on normal plugin load.
+  - Documented that deactivation preserves records and this release has no destructive uninstall cleanup.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed.
+- **Next gate**: Run final cross-repository matrix only after Core/Adapter/Toolkit checkouts are clean and pinned to the intended release tags.
+
+# 2026-09-04 - Cross-repository release gate blocked
+
+- **Evidence**: `composer rc:version-matrix` stopped because the Adapter worktree contains uncommitted changes and an untracked `uninstall.php`/release script. No other repository was modified by this session.
+- **Required next action**: The owner must finish or commit the Adapter changes, then rerun the central matrix and cross-repo acceptance against exact Core `0.2.0`, Adapter `0.3.2`, and Toolkit `0.5.3` candidates.
+
+# 2026-09-04 - Explicit uninstall policy
+
+- **Module**: Plugin uninstall lifecycle and final package checks.
+- **Completed**: Added an explicit no-op `uninstall.php` that preserves governance records and is protected against direct access. Fixed strict Plugin Check suppression coverage for cleanup count queries.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, `composer check:wporg`, and `bash scripts/prepare-release.sh --allow-dirty --skip-smoke --version 0.2.0` passed, including Plugin Check against the extracted ZIP.
+- **Next gate**: Cross-repository release matrix remains pending on external Adapter worktree cleanliness.
+
+# 2026-09-04 - Domain plan boundary freeze
+
+- **Module**: Core plan-to-proposal contract ownership boundary.
+- **Completed**: Added ADR-009 freezing new domain-specific plan ids, schemas, previews, and workflow semantics in Core for the 0.2.x line; migration target is a provider-neutral governance envelope owned by provider/integration repositories.
+- **Verification**: `composer test:all` and `composer analyse:phpstan` passed.
+- **Next gate**: Cross-repository matrix and acceptance after all participating repositories are clean and version-pinned.
+
+# 2026-09-04 - Core release candidate verification complete
+
+- **Evidence**: Full `bash scripts/prepare-release.sh --version 0.2.0` passed, including real WordPress smoke and strict Plugin Check against the extracted final ZIP.
+- **Artifact**: `build/npcink-governance-core.zip`, SHA-256 `dafb955487334c0020d9c488853c1058eea14c0fb5ceb28543f993c5d7b49d2b`.
+- **Remaining blocker**: Central cross-repository matrix remains `not_run` because Toolkit, Adapter, Workflow Toolbox, Cloud Add-on, and Cloud worktrees contain uncommitted changes.
+
+# 2026-09-04 - CI release workflow parity
+
+- **Module**: GitHub release-package workflow.
+- **Completed**: Added Composer dependency installation, PHPStan, forbidden-directory checks, uninstall entry-point verification, and ZIP checksum output to the CI packaging job. Runtime WordPress smoke remains in the local release gate where the configured WordPress environment exists.
+- **Verification**: `composer test:all` and `composer validate --no-check-publish` passed locally.
+- **Next gate**: Run the central cross-repository matrix after external repositories are clean.
+
+# 2026-09-04 - Active release documentation version sync
+
+- **Module**: REST contract and WordPress.org release instructions.
+- **Completed**: Updated active examples and commands from the historical `0.1.1` release to the current Core `0.2.0` candidate while preserving historical closeout records.
+- **Verification**: `composer test:all` and `composer validate --no-check-publish` passed.
+- **Next gate**: Cross-repository matrix remains blocked by dirty external worktrees.

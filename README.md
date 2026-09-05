@@ -36,6 +36,12 @@ This plugin does not own:
 
 - WordPress 7.0+ with WordPress Abilities API available for full ability intake.
 - PHP 8.0+.
+- Multisite is supported; network activation provisions Core tables for every
+  existing site and new sites are provisioned during initialization.
+- Deactivation preserves governance records. There is no automatic uninstall
+  deletion policy in this release because audit and approval history may be
+  subject to site retention requirements. The explicit `uninstall.php` entry
+  point is intentionally a no-op.
 
 ## MVP REST Surface
 
@@ -171,6 +177,7 @@ Architecture decisions:
 - [ADR-006: Unattended Batch Automation Runtime Boundary](docs/decisions/ADR-006-unattended-batch-automation-runtime-boundary.md)
 - [ADR-007: Dedicated Local Automation Runtime Owner](docs/decisions/ADR-007-dedicated-local-automation-runtime-owner.md)
 - [ADR-008: Fail Closed At Ability Intake](docs/decisions/ADR-008-fail-closed-ability-intake.md)
+- [ADR-009: Freeze Domain-Specific Plan Contracts In Core](docs/decisions/ADR-009-freeze-domain-plan-contracts.md)
 
 External agent clients can start from the
 [OpenClaw governance adapter example](examples/openclaw-governance-adapter/README.md).

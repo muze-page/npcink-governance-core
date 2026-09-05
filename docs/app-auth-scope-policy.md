@@ -50,7 +50,7 @@ Core app identity includes:
 | `created_by` | WordPress user id that created the app identity. |
 | `created_at` | UTC creation time. |
 | `last_used_at` | Last successful authentication time. |
-| `last_used_ip_hash` | Non-reversible hash of the last successful request IP, when available. |
+| `last_used_ip_hash` | Site-keyed HMAC of the last successful request IP, when available. |
 | `revoked_at` | UTC time the key was manually revoked. |
 | `revoked_reason` | Optional administrator or system reason for revocation. |
 

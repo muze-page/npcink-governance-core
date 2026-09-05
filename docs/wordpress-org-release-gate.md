@@ -119,7 +119,7 @@ Text Domain: npcink-governance-core
 For a specific release, pass the expected version:
 
 ```sh
-composer prepare:release -- --version 0.1.1
+composer prepare:release -- --version 0.2.0
 ```
 
 Do not use `--skip-smoke` for a real WordPress.org release. That option exists
@@ -140,15 +140,15 @@ After `composer prepare:release` succeeds, sync the built package to an
 existing SVN checkout with a dry run first:
 
 ```sh
-composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core
+composer sync:wporg -- --version 0.2.0 --svn-dir /path/to/wporg-npcink-governance-core
 ```
 
 Apply the sync only after reviewing the dry-run output:
 
 ```sh
-composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core --apply
+composer sync:wporg -- --version 0.2.0 --svn-dir /path/to/wporg-npcink-governance-core --apply
 svn status /path/to/wporg-npcink-governance-core
-svn commit /path/to/wporg-npcink-governance-core -m "Release npcink-governance-core 0.1.1"
+svn commit /path/to/wporg-npcink-governance-core -m "Release npcink-governance-core 0.2.0"
 ```
 
 If the WordPress.org listing assets changed, include `--assets` so
@@ -156,7 +156,7 @@ If the WordPress.org listing assets changed, include `--assets` so
 set:
 
 ```sh
-composer sync:wporg -- --version 0.1.1 --svn-dir /path/to/wporg-npcink-governance-core --assets --apply
+composer sync:wporg -- --version 0.2.0 --svn-dir /path/to/wporg-npcink-governance-core --assets --apply
 ```
 
 The sync helper refuses to overwrite an existing `tags/<version>` directory.
