@@ -110,6 +110,7 @@ if [[ -z "$TOOLKIT_SOURCE_PATH" ]]; then
 fi
 
 plugin_link="$WP_PATH/wp-content/plugins/npcink-governance-core"
+toolkit_link="$WP_PATH/wp-content/plugins/npcink-abilities-toolkit"
 toolkit_plugin="$WP_PATH/wp-content/plugins/npcink-abilities-toolkit/npcink-abilities-toolkit.php"
 toolkit_fixture="$TOOLKIT_SOURCE_PATH/tests/fixtures/agent-workflow-replay.json"
 
@@ -120,11 +121,29 @@ smoke_preflight_note "WP_CLI_PHP=$WP_CLI_PHP ($(smoke_path_state "$WP_CLI_PHP"))
 smoke_preflight_note "WP_CLI_MYSQL_SOCKET=${WP_CLI_MYSQL_SOCKET:-<not set>} ($(smoke_path_state "${WP_CLI_MYSQL_SOCKET:-}"))"
 smoke_preflight_note "NPCINK_ABILITIES_TOOLKIT_PATH=${NPCINK_ABILITIES_TOOLKIT_PATH:-<not set>}; diagnostic source=$TOOLKIT_SOURCE_PATH ($(smoke_path_state "$TOOLKIT_SOURCE_PATH"))"
 smoke_preflight_note "Core plugin mount=$plugin_link ($(smoke_path_state "$plugin_link"))"
+smoke_preflight_note "Toolkit plugin mount=$toolkit_link ($(smoke_path_state "$toolkit_link"))"
 smoke_preflight_note "Toolkit plugin file=$toolkit_plugin ($(smoke_path_state "$toolkit_plugin"))"
 smoke_preflight_note "Toolkit replay fixture=$toolkit_fixture ($(smoke_path_state "$toolkit_fixture"))"
 
-if [[ ! -f "$toolkit_plugin" ]]; then
-	smoke_preflight_fail "toolkit: npcink-abilities-toolkit plugin file is missing in the LocalWP plugins directory: $toolkit_plugin"
+if [[ ! -f "$TOOLKIT_SOURCE_PATH/npcink-abilities-toolkit.php" || ! -f "$toolkit_fixture" ]]; then
+	smoke_preflight_fail "toolkit: source checkout is incomplete: $TOOLKIT_SOURCE_PATH"
+fi
+
+if [[ -L "$toolkit_link" && ! -e "$toolkit_link" ]]; then
+	rm "$toolkit_link"
+fi
+if [[ ! -e "$toolkit_link" ]]; then
+	ln -s "$TOOLKIT_SOURCE_PATH" "$toolkit_link"
+	smoke_preflight_note "Created Toolkit plugin symlink: $toolkit_link -> $TOOLKIT_SOURCE_PATH"
+fi
+if [[ ! -L "$toolkit_link" ]]; then
+	smoke_preflight_fail "toolkit: plugin path exists but is not the expected symlink: $toolkit_link"
+fi
+
+toolkit_source_resolved="$(cd "$TOOLKIT_SOURCE_PATH" && pwd -P)"
+toolkit_link_resolved="$(cd "$toolkit_link" && pwd -P)"
+if [[ "$toolkit_link_resolved" != "$toolkit_source_resolved" ]]; then
+	smoke_preflight_fail "toolkit: plugin symlink resolves to $toolkit_link_resolved, expected $toolkit_source_resolved"
 fi
 
 wp_args=()

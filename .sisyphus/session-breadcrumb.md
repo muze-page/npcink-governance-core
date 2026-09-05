@@ -5312,3 +5312,13 @@
 - **Completed**: Updated active examples and commands from the historical `0.1.1` release to the current Core `0.2.0` candidate while preserving historical closeout records.
 - **Verification**: `composer test:all` and `composer validate --no-check-publish` passed.
 - **Next gate**: Cross-repository matrix remains blocked by dirty external worktrees.
+# 2026-09-05 - Exact Toolkit checkout smoke binding
+
+- **Module**: WordPress smoke dependency mounting and release matrix.
+- **Completed**:
+  - Smoke now mounts the configured Toolkit checkout when missing or broken and fails closed when an existing mount resolves elsewhere.
+  - Cross-repo acceptance explicitly exports the Toolkit checkout path.
+  - Updated the clean Toolkit release candidate expectation to `0.5.4`.
+  - Made shutdown cleanup safe after early failures and corrected the history cleanup smoke assertion for pre-existing backlogs larger than the bounded batch.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed against the exact clean Toolkit checkout.
+- **Next gate**: Re-run cross-repository release acceptance; Adapter must use a new version instead of reusing historical `v0.3.2`.

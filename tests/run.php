@@ -927,7 +927,7 @@ foreach (
 		'npcink-abilities-toolkit',
 		'0.2.0',
 		'0.3.2',
-		'0.5.3',
+		'0.5.4',
 		'must not be moved',
 		'--require-tag-ready',
 		'stack-rc-2026-06-21-core-0.1.1-adapter-0.3.2-toolkit-0.5.2',
@@ -1814,12 +1814,15 @@ npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+$smoke_source = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 $authenticator_source = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 $plugin_source = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 $uninstall_source = npcink_governance_core_read( $root . '/uninstall.php' );
 $plan_boundary_adr = npcink_governance_core_read( $root . '/docs/decisions/ADR-009-freeze-domain-plan-contracts.md' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batch_action_guardrails' ), 'Batch proposals persist per-action governance guardrails.' );
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids )' ), 'Smoke shutdown cleanup tolerates early failure before fixture globals are populated.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'history cleanup removes the fixture or fills the bounded batch' ), 'History cleanup smoke respects bounded deletion when the site has an older backlog.' );
 npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'network_wide' ) && false !== strpos( $plugin_source, 'wp_initialize_site' ), 'Plugin lifecycle provisions multisite tables.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'OPTION_SCHEMA_VERSION' ) && false !== strpos( $plugin_source, 'maybe_upgrade_schema' ), 'Plugin lifecycle persists and checks schema version.' );

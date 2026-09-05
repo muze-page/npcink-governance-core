@@ -170,6 +170,7 @@ export WP_CLI_PHP
 export WP_CLI_ERROR_REPORTING
 export WP_CLI_MYSQL_SOCKET
 export WP_DB_SOCKET
+export NPCINK_ABILITIES_TOOLKIT_PATH="$TOOLKIT_ROOT"
 
 log "Core root: $CORE_ROOT"
 log "Adapter root: $ADAPTER_ROOT"

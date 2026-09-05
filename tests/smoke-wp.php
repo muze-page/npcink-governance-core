@@ -322,10 +322,10 @@ function npcink_governance_core_smoke_purge_governance_records(): void {
 	$rate_table      = $wpdb->prefix . 'npcink_governance_core_app_rate_limits';
 	$proposal_table  = $wpdb->prefix . 'npcink_governance_core_proposals';
 	$read_request_table = $wpdb->prefix . 'npcink_governance_core_read_requests';
-	$proposal_ids    = array_keys( $npcink_governance_core_smoke_proposal_fixture_ids );
-	$read_request_ids = array_keys( $npcink_governance_core_smoke_read_request_fixture_ids );
-	$app_ids         = array_keys( $npcink_governance_core_smoke_app_fixture_ids );
-	$key_ids         = array_keys( $npcink_governance_core_smoke_app_key_fixture_ids );
+	$proposal_ids    = array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids );
+	$read_request_ids = array_keys( (array) $npcink_governance_core_smoke_read_request_fixture_ids );
+	$app_ids         = array_keys( (array) $npcink_governance_core_smoke_app_fixture_ids );
+	$key_ids         = array_keys( (array) $npcink_governance_core_smoke_app_key_fixture_ids );
 
 	foreach ( $proposal_ids as $proposal_id ) {
 		$wpdb->delete( $audit_table, array( 'proposal_id' => sanitize_text_field( $proposal_id ) ), array( '%s' ) );
@@ -1378,6 +1378,7 @@ $wpdb->update(
 	array( '%s' )
 );
 
+$history_cleanup_planned_audit_events = $history_cleanup_audit->count_access_events_before( gmdate( 'Y-m-d H:i:s', time() - ( 90 * DAY_IN_SECONDS ) ) );
 $history_cleanup_result = $history_cleanup_service->run( 'smoke' );
 npcink_governance_core_smoke_assert( ! is_wp_error( $history_cleanup_result ), 'history cleanup service runs without error' );
 npcink_governance_core_smoke_assert( (int) ( $history_cleanup_result['deleted_proposals'] ?? 0 ) >= 1, 'history cleanup deletes old historical proposals' );
@@ -1392,7 +1393,14 @@ $history_cleanup_access_event_exists = (int) $wpdb->get_var(
 		$history_cleanup_access_event_id
 	)
 );
-npcink_governance_core_smoke_assert( 0 === $history_cleanup_access_event_exists, 'history cleanup removes the old access audit fixture' );
+npcink_governance_core_smoke_assert(
+	0 === $history_cleanup_access_event_exists
+		|| (
+			$history_cleanup_planned_audit_events > \Npcink\GovernanceCore\Governance\History_Cleanup_Service::CLEANUP_BATCH_LIMIT
+			&& \Npcink\GovernanceCore\Governance\History_Cleanup_Service::CLEANUP_BATCH_LIMIT === (int) ( $history_cleanup_result['deleted_audit_events'] ?? 0 )
+		),
+	'history cleanup removes the fixture or fills the bounded batch when older eligible events remain'
+);
 $history_cleanup_completed_count = (int) $wpdb->get_var(
 	$wpdb->prepare(
 		'SELECT COUNT(*) FROM %i WHERE event_name = %s AND metadata_json LIKE %s',
