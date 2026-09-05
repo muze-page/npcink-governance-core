@@ -1,5 +1,23 @@
 # Session Breadcrumb
 
+## 2026-09-05 — Article-product direction parked
+
+- **Module**: Core-local historical decision documentation only.
+- **Status**: The external-source adaptation and automatic resource-article
+  research is preserved, while further product development is paused until
+  the target user, recurring editorial job, automation boundary, and success
+  metric are clear.
+- **Evidence**: The existing stack has demonstrated source extraction,
+  writing-pack, native Gutenberg draft, and governed external-write paths.
+  Trial post `286721` was later published; post `286722` remains a draft. This
+  is a useful adoption signal, but not repeatable product validation.
+- **Next gate**: No article implementation is pending. If the direction is
+  reopened, first run a three-to-five-article, no-new-contract discovery pilot
+  and require repeated adoption before changing an owning product module.
+- **Boundary**: No REST route, plan schema, table, lifecycle state, workflow
+  runtime, queue, scheduler, provider ownership, article UX, or WordPress write
+  behavior was added to Core.
+
 ## 2026-07-14 — Fail-closed ability intake hardening
 
 - **Module**: Core ability discovery admission and governance service gates.

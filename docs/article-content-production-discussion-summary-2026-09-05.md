@@ -1,6 +1,7 @@
 # Article Content Production Discussion Summary - 2026-09-05
 
-Status: accepted historical summary and Core-local boundary guide.
+Status: accepted historical summary and Core-local boundary guide; product
+development parked pending clearer positioning.
 
 Authority note: this document summarizes two completed Codex discussion
 threads and the implementation evidence they produced. It is not a new product
@@ -45,6 +46,52 @@ The agreed default posture is draft-first and review-first. Automatic research
 may proceed to a reviewable result, but publication is not an implied final
 step. Empty results, blocked evidence, and editorial rejection are valid
 outcomes.
+
+## Current Product Disposition - 2026-09-05
+
+The research and implementation evidence are retained, but article-product
+development is intentionally paused. The technical path is sufficiently
+demonstrated to avoid another infrastructure-first build. What remains unclear
+is the product position: target user, highest-value recurring job, acceptable
+level of automation, and whether the differentiated value is editor
+assistance, governed external-client execution, or resource-content
+production.
+
+This is a parked direction, not an abandoned capability and not an approved
+roadmap item. No repository should interpret this document as an instruction
+to add article presets, resource schemas, batch controls, automation runtime,
+or new Core contracts.
+
+The preserved assets are:
+
+- the source extraction, writing-pack, draft-preview, editor-adoption, and
+  governed write foundations already present in their owning repositories;
+- the implementation commits and real-trial evidence recorded below;
+- the two archived Codex tasks listed in Source Discussions;
+- this decision record, including rejected approaches and ownership rules.
+
+Before product development resumes, answer these questions with a named user
+and a real publishing workflow:
+
+1. Which recurring editorial job is painful enough to justify a product:
+   source adaptation, editor drafting, external-agent WordPress execution, or
+   resource-article production?
+2. Who makes the final editorial decision, and at what point must the product
+   stop for review?
+3. What measurable improvement is expected over the user's existing writing
+   process: retained drafts, editing time, publishing throughput, or fewer
+   factual and operational errors?
+4. Which current capability is actually missing after a real end-to-end trial,
+   rather than merely being inconvenient or not yet packaged?
+5. Is the missing behavior owned by Toolbox, an ability provider, Adapter, or
+   a future automation runtime? It must not be placed in Core by default.
+
+The recommended restart is a no-new-contract discovery pilot using three to
+five real articles and the existing stack. Resume implementation only when the
+pilot identifies one repeated user problem, at least two outputs are retained
+or published, the user reports meaningful time or quality improvement, and
+one owning module can address the largest observed gap. Otherwise keep the
+direction parked. Do not use a 20-article batch as the first validation.
 
 ## Discussion Stream A: External Source Adaptation
 
@@ -204,14 +251,17 @@ The final editorial trial produced the strongest evidence:
 - a factually correct WordPress 6.9.2 release article was rejected because its
   July publication value had expired after WordPress 7.0 shipped.
 
-Both accepted drafts remained unpublished native Gutenberg drafts. The
-rejection was a positive governance and editorial outcome: correctness alone
-does not make content worth publishing.
+At the close of the historical trial, both accepted outputs were unpublished
+native Gutenberg drafts. A later local observation found that post `286721`
+had been published, while post `286722` remained a draft. The rejected article
+was a positive governance and editorial outcome: correctness alone does not
+make content worth publishing.
 
-The remaining value gate is human adoption. The author or editor must decide
-whether drafts `286721` and `286722` are worth keeping and continuing to edit.
-Until that decision exists, the work proves technical feasibility and a strong
-editor-value proxy, not complete product-market validation.
+The publication of one trial output is the strongest positive adoption signal
+available, but one published post and one unfinished draft do not establish a
+repeatable product need. The evidence proves technical feasibility and a
+credible editor-value signal, not product positioning or product-market
+validation.
 
 ## Discussion Stream B: Automatic Resource Article Creation
 
@@ -476,25 +526,30 @@ code.
 | Keep editor-memory adoption separate from external automated writes. | Accepted Core classification boundary. |
 | Use AI Client Adapter for the existing OpenClaw-like client; do not add MCP for this goal. | Accepted product/channel decision. |
 | Keep queues, workers, leases, retries, schedules, and resume state outside Core and Adapter. | Accepted architecture boundary. |
-| Start resource content with one golden sample, then bounded batches. | Recommended next product validation. |
+| Continue article-product implementation now. | Parked until product positioning and a repeated user job are validated. |
+| Start resource content with one golden sample, then bounded batches. | Historical recommendation; superseded for now by a three-to-five-article no-new-contract discovery pilot. |
 | Add `resource_article_write_plan.v1` directly to Core. | Historical proposal; not accepted and now blocked by ADR-009 without a new ADR. |
 | Consider the article product commercially validated. | Not yet proven; editor adoption remains the gate. |
 
 ## Recommended Next Gate
 
-Do not add another Core feature from these discussions.
+Do not add another Core feature or begin cross-repository article-product
+implementation from these discussions.
 
-The next useful product experiment belongs in the owning product lane:
+If this direction is reconsidered later, the next useful product experiment
+belongs in the owning product lane:
 
-1. Have an author decide whether drafts `286721` and `286722` are worth
-   keeping.
-2. If editor value passes, run one resource-article golden sample using the
-   current local product recipe and existing governed abilities.
+1. State one target user, one recurring job, and one success metric before
+   changing code.
+2. Run three to five real articles through the current stack, including a
+   resource article only if that matches the selected job.
 3. Record evidence completeness, edit time, retained content, failed bindings,
    duplicate behavior, and final draft status.
-4. Change only the owning module responsible for the largest observed failure.
-5. Run the owning repository gate, then the central matrix only when closing a
-   cross-repository milestone.
+4. Decide Go/No-Go from observed adoption; do not equate pipeline completion
+   with product value.
+5. If Go, change only the owning module responsible for the largest repeated
+   failure. Run the owning repository gate, then the central matrix when
+   closing a cross-repository milestone.
 
 ## Core Stop Rules
 
