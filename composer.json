@@ -33,6 +33,7 @@
     "prepare:release": "bash scripts/prepare-release.sh",
     "sync:wporg": "bash scripts/sync-wporg-svn.sh",
     "acceptance:cross-repo-release": "bash scripts/cross-repo-release-acceptance.sh",
+    "pr:publish": "bash scripts/publish-pr.sh",
     "rc:version-matrix": "bash scripts/check-release-candidate-version-matrix.sh",
     "plugin-check:release": "bash scripts/plugin-check-release.sh",
     "release:verify": [
