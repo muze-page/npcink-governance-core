@@ -2096,6 +2096,10 @@ $block_theme_homepage_plan_input = array(
 	'include_latest_posts'   => true,
 	'include_category_links' => true,
 	'include_cta'            => true,
+	'variables'              => array(
+		'cta_url'   => 'https://example.test/get-started/',
+		'cta_label' => 'Get started',
+	),
 );
 $block_theme_homepage_plan = npcink_governance_core_smoke_run_plan_ability( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan_input );
 $block_theme_homepage_result = npcink_governance_core_smoke_create_proposals_from_plan( 'npcink-abilities-toolkit/build-block-theme-site-plan', $block_theme_homepage_plan, $block_theme_homepage_plan_input );
