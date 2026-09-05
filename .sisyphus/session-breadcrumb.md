@@ -1,5 +1,27 @@
 # Session Breadcrumb
 
+## 2026-09-05 — M4 packaged Core smoke accepted
+
+- **Module**: Core release artifact installation and WordPress compatibility
+  evidence.
+- **Completed**: Added a revision-bound M4 runner that sends Core and Toolkit
+  tracked test workspaces plus the reproducible Core ZIP to the M4 host. It
+  installs Core from the ZIP in disposable WordPress 7.0/PHP 8.0 and
+  WordPress 7.0/PHP 8.5 profiles, verifies actual runtime versions, runs the
+  real Core smoke, records exact source/archive/package hashes, and cleans all
+  remote Docker resources.
+- **Verified**: Both profiles passed 1,426 assertions; `release:verify:m4`
+  accepted evidence for Core `e98f2a90...`, Toolkit `3e237d91...`, package
+  SHA `6b87a88b...`, and Docker Server `29.7.2`.
+- **Observed**: The smoke still logs a duplicate-key error when the app rate
+  limiter races its first window insert. The request is handled, but this is a
+  release-quality defect for the next focused Core security module slice.
+- **Next gate**: Fix the rate limiter's insert/increment race without changing
+  its public contract, add a regression, and rerun M4 to prove clean logs.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
 ## 2026-09-05 — Reproducible Core release packaging
 
 - **Module**: Core release packaging and verification only.
