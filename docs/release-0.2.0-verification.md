@@ -1,15 +1,15 @@
 # 0.2.0 Release Verification
 
-Status: technically verified release candidate; publication operations are
-not complete.
+Status: Git release published; WordPress.org SVN publication remains a
+separately authorized release-owner operation.
 
 ## Candidate Revisions
 
 | Repository | Version | Revision | Conventional tag |
 | --- | --- | --- | --- |
-| Governance Core | `0.2.0` | `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc` merged via protected PR #74 | `v0.2.0` available |
-| AI Client Adapter | `0.3.3` | `66ad29f044607bb0721d6cf542beae9584420e30` | `v0.3.3` available |
-| Abilities Toolkit | `0.5.5` | `3e237d91cbc1f135c559d47d1e20106aee62c1bb` | `0.5.5` available |
+| Governance Core | `0.2.0` | `7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6` | `v0.2.0` published and verified |
+| AI Client Adapter | `0.3.3` | `8800b8e4c4651c5d4dff759c3050135d74968927` | `v0.3.3` published and verified |
+| Abilities Toolkit | `0.5.5` | `3e237d91cbc1f135c559d47d1e20106aee62c1bb` | `0.5.5` published and verified |
 
 ## Verified
 
@@ -27,9 +27,12 @@ not complete.
   no errors.
 - On M4 Docker 29.7.2, the Toolkit candidate passed 441 smoke assertions on
   WordPress 6.9.4/PHP 8.0 and 441 on WordPress 7.0/PHP 8.5.
-- The central six-repository `composer quality:matrix:run` gate passed.
-- `composer rc:version-matrix -- --require-tag-ready` passed and found all
-  three conventional tags available.
+- The central six-repository gate passed with
+  `--run-gates --fail-on-dirty` for every configured repository root.
+- The full cross-repository release acceptance passed in one invocation with
+  exact Toolkit M4 evidence and the commit-enabled signed Adapter fixture.
+- `composer rc:version-matrix` passed after publication and found all three
+  conventional tags pointing at the exact candidate heads.
 
 ## Final Core Artifact
 
@@ -40,32 +43,36 @@ not complete.
 
 ## Post-Merge M4 Evidence
 
-- Source revision: `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc`
-- Source archive SHA-256: `60e2eed73df9c1d9382301ef877414f007783e95945c660df2ec28b3c6e00230`
+- Source revision: `7f2c6bf5b3f810f65f2e3f2d396ecfdf78c07ee6`
+- Source archive SHA-256: `f68903cc6a2a0e865672b973a1c09eff8ba2a180f983d47316e4763c757ebaa6`
 - Core package SHA-256: `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`
 - Toolkit archive SHA-256: `00af0bf9c7775c6722b40a4ba05d060c39afd007da3acb96a656f6be71edc777`
 - M4 Docker Server: `29.7.2`
 - Profiles: WordPress 7.0/PHP 8.0 and 7.0/PHP 8.5, 1,426 assertions each,
   installed from ZIP.
 
-## Remaining Release Risks
+## Remaining Operational Follow-Up
 
-1. Workflow Toolbox has unrelated uncommitted paths. Its test gate passed,
-   but a clean exact-source stack closeout cannot be claimed until its owner
-   resolves those changes.
-2. Core, Adapter, and Toolkit release tags have not been created or pushed;
-   final coordinated tagging remains pending.
-3. Local WP-CLI under PHP 8.5 emits repeated third-party color-library
+1. Additional historical worktrees outside the configured release roots retain
+   unrelated owner-held changes. They do not change the tagged candidates, but
+   global workspace cleanup must not be claimed until each owner resolves or
+   archives them.
+2. Local WP-CLI under PHP 8.5 emits repeated third-party color-library
    deprecation messages. They did not fail any product assertion, but they make
    release logs noisy and should be isolated or suppressed in CI tooling.
-4. Toolkit packaged Plugin Check has no errors but retains known
+3. Toolkit packaged Plugin Check has no errors but retains known
    translation-loading and bounded database-query warnings. These should stay
    documented and be re-evaluated before a WordPress.org submission.
+4. Dependency-update pull requests remain separate maintenance work and are
+   not part of the tagged Core, Adapter, or Toolkit candidates.
 
 ## Publication Decision
 
-Do not tag or publish yet. Complete the remaining Adapter/Toolkit/Toolbox
-protected-repository closeout, rerun the strict version and central quality
-matrices, then perform the final coordinated tag and package publication. No product workflow,
-workflow runtime, queue, MCP runtime, provider credential, or final write
-execution belongs in Core as part of this closeout.
+The coordinated Git release is complete. The conventional annotated tags were
+pushed and verified against the exact accepted commits. WordPress.org SVN
+publication was not performed and remains an explicit release-owner action.
+
+Use [Release Closeout Standard](release-closeout-standard.md) for future
+releases. No product workflow, workflow runtime, queue, MCP runtime, provider
+credential, or final write execution belongs in Core as part of publication or
+workspace cleanup.
