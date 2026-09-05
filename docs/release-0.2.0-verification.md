@@ -7,7 +7,7 @@ not complete.
 
 | Repository | Version | Revision | Conventional tag |
 | --- | --- | --- | --- |
-| Governance Core | `0.2.0` | `4aaf3383ad33afcd6a12000e77e82078362c60cd` M4 smoke candidate; protected merge pending | `v0.2.0` available |
+| Governance Core | `0.2.0` | `9771b9536e8c3a2029be0d5872acf4afe34c3b30` merged via protected PR #72 | `v0.2.0` available |
 | AI Client Adapter | `0.3.3` | `66ad29f044607bb0721d6cf542beae9584420e30` | `v0.3.3` available |
 | Abilities Toolkit | `0.5.5` | `3e237d91cbc1f135c559d47d1e20106aee62c1bb` | `0.5.5` available |
 
@@ -38,12 +38,22 @@ not complete.
 - ZIP integrity: passed.
 - Reproducibility: two equivalent builds passed with the same SHA-256.
 
+## Post-Merge M4 Evidence
+
+- Source revision: `9771b9536e8c3a2029be0d5872acf4afe34c3b30`
+- Source archive SHA-256: `eb8b549095a42162998a131f2effdf79e1b2d27658c16f2fae8c7c52f78e635e`
+- Core package SHA-256: `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`
+- Toolkit archive SHA-256: `00af0bf9c7775c6722b40a4ba05d060c39afd007da3acb96a656f6be71edc777`
+- M4 Docker Server: `29.7.2`
+- Profiles: WordPress 7.0/PHP 8.0 and 7.0/PHP 8.5, 1,426 assertions each,
+  installed from ZIP.
+
 ## Remaining Release Risks
 
 1. Workflow Toolbox has unrelated uncommitted paths. Its test gate passed,
    but a clean exact-source stack closeout cannot be claimed until its owner
    resolves those changes.
-2. Core and Adapter release branches are ahead of origin, and the Toolkit
+2. Adapter release work still requires protected PR closeout, and the Toolkit
    release branch has no upstream. No release tag has been created or pushed.
 3. Local WP-CLI under PHP 8.5 emits repeated third-party color-library
    deprecation messages. They did not fail any product assertion, but they make
@@ -54,8 +64,8 @@ not complete.
 
 ## Publication Decision
 
-Do not tag or publish yet. Publish the candidate
-commits through protected pull requests, regenerate exact-merge evidence, and
-rerun the strict version and central quality matrices. No product workflow,
+Do not tag or publish yet. Complete the remaining Adapter/Toolkit/Toolbox
+protected-repository closeout, rerun the strict version and central quality
+matrices, then perform the final coordinated tag and package publication. No product workflow,
 workflow runtime, queue, MCP runtime, provider credential, or final write
 execution belongs in Core as part of this closeout.

@@ -1,5 +1,26 @@
 # Session Breadcrumb
 
+## 2026-09-05 — Core protected merge and post-merge M4 evidence
+
+- **Module**: Core protected release merge and exact-head verification.
+- **Completed**: Merged Core release candidate PR #72 into `master` as
+  `9771b9536e8c3a2029be0d5872acf4afe34c3b30` after PR body and static checks
+  passed.
+- **Verified**: Re-ran the packaged Core smoke on M4 Docker Server 29.7.2 for
+  WordPress 7.0/PHP 8.0 and 8.5; both passed 1,426 assertions and installed
+  Core from ZIP. Evidence is bound to source archive
+  `eb8b549095a42162998a131f2effdf79e1b2d27658c16f2fae8c7c52f78e635e` and
+  package `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`.
+  `release:verify:m4` passed. The Composer wrapper's first attempt hit its
+  300-second process timeout; the rerun with `COMPOSER_PROCESS_TIMEOUT=0`
+  completed successfully. The validated remote temporary workspace was
+  removed afterward.
+- **Next gate**: Close out Adapter, Toolkit, and Toolbox through their owning
+  branches and protected PRs; rerun the central matrix before tagging.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
 ## 2026-09-05 — M4 packaged Core smoke clean-log verification
 
 - **Module**: Core release artifact installation and WordPress compatibility
