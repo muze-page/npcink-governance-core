@@ -31,6 +31,8 @@ local_tmp="$(mktemp -d "${TMPDIR:-/tmp}/npcink-core-m4.XXXXXX")"
 core_archive="$local_tmp/core-source.tar"
 toolkit_archive="$local_tmp/toolkit-source.tar"
 package_copy="$local_tmp/npcink-governance-core.zip"
+minimum_log="$local_tmp/minimum-profile.log"
+current_log="$local_tmp/current-profile.log"
 remote_dir=''
 minimum_project="npcink_core_69_$short_revision"
 current_project="npcink_core_70_$short_revision"
@@ -62,11 +64,19 @@ scp -q "$core_archive" "$toolkit_archive" "$package_copy" "$M4_HOST:$remote_dir/
 ssh "$M4_HOST" "mkdir -p '$remote_dir/core' '$remote_dir/toolkit' && tar -xf '$remote_dir/core-source.tar' -C '$remote_dir/core' && tar -xf '$remote_dir/toolkit-source.tar' -C '$remote_dir/toolkit' && test \"\$(shasum -a 256 '$remote_dir/npcink-governance-core.zip' | awk '{print \$1}')\" = '$package_sha256'"
 docker_version="$(ssh "$M4_HOST" 'docker version --format "{{.Server.Version}}"')"
 
-minimum_output="$(ssh "$M4_HOST" "cd '$remote_dir/core' && NPCINK_CORE_M4_TOOLKIT_ROOT='$remote_dir/toolkit' NPCINK_CORE_M4_PACKAGE='$remote_dir/npcink-governance-core.zip' NPCINK_CORE_M4_PROJECT_NAME='$minimum_project' NPCINK_CORE_M4_HTTP_PORT=8931 bash scripts/m4-wordpress-package-profile.sh" 2>&1)"
+if ! ssh "$M4_HOST" "cd '$remote_dir/core' && NPCINK_CORE_M4_TOOLKIT_ROOT='$remote_dir/toolkit' NPCINK_CORE_M4_PACKAGE='$remote_dir/npcink-governance-core.zip' NPCINK_CORE_M4_PROJECT_NAME='$minimum_project' NPCINK_CORE_M4_HTTP_PORT=8931 bash scripts/m4-wordpress-package-profile.sh" > "$minimum_log" 2>&1; then
+	sed -n '1,4000p' "$minimum_log" >&2
+	exit 1
+fi
+minimum_output="$(<"$minimum_log")"
 printf '%s\n' "$minimum_output"
 minimum_assertions="$(printf '%s\n' "$minimum_output" | sed -nE 's/^Smoke OK: ([0-9]+) assertions$/\1/p' | tail -n 1)"
 
-current_output="$(ssh "$M4_HOST" "cd '$remote_dir/core' && NPCINK_CORE_M4_TOOLKIT_ROOT='$remote_dir/toolkit' NPCINK_CORE_M4_PACKAGE='$remote_dir/npcink-governance-core.zip' NPCINK_CORE_M4_PROJECT_NAME='$current_project' NPCINK_CORE_M4_HTTP_PORT=8932 NPCINK_CORE_M4_WORDPRESS_VERSION=7.0 NPCINK_CORE_M4_PHP_VERSION=8.5 NPCINK_CORE_M4_SMOKE_LABEL=Current bash scripts/m4-wordpress-package-profile.sh" 2>&1)"
+if ! ssh "$M4_HOST" "cd '$remote_dir/core' && NPCINK_CORE_M4_TOOLKIT_ROOT='$remote_dir/toolkit' NPCINK_CORE_M4_PACKAGE='$remote_dir/npcink-governance-core.zip' NPCINK_CORE_M4_PROJECT_NAME='$current_project' NPCINK_CORE_M4_HTTP_PORT=8932 NPCINK_CORE_M4_WORDPRESS_VERSION=7.0 NPCINK_CORE_M4_PHP_VERSION=8.5 NPCINK_CORE_M4_SMOKE_LABEL=Current bash scripts/m4-wordpress-package-profile.sh" > "$current_log" 2>&1; then
+	sed -n '1,4000p' "$current_log" >&2
+	exit 1
+fi
+current_output="$(<"$current_log")"
 printf '%s\n' "$current_output"
 current_assertions="$(printf '%s\n' "$current_output" | sed -nE 's/^Smoke OK: ([0-9]+) assertions$/\1/p' | tail -n 1)"
 

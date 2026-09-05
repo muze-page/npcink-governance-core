@@ -99,6 +99,10 @@ if ( false === $runner || 2 !== substr_count( $runner, "sed -nE 's/^Smoke OK: ([
 	fwrite( STDERR, "FAIL: Core M4 runner does not parse both assertion summaries.\n" );
 	exit( 1 );
 }
+if ( 2 !== substr_count( $runner, "sed -n '1,4000p'" ) ) {
+	fwrite( STDERR, "FAIL: Core M4 runner does not preserve both remote failure logs.\n" );
+	exit( 1 );
+}
 
 $profile_runner = file_get_contents( $root . '/scripts/m4-wordpress-package-profile.sh' );
 if ( false === $profile_runner || false === strpos( $profile_runner, 'plugin install' ) || false === strpos( $profile_runner, 'npcink-governance-core.zip --force --activate' ) ) {
