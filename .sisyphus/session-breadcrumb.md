@@ -1,5 +1,24 @@
 # Session Breadcrumb
 
+## 2026-09-05 — Reproducible Core release packaging
+
+- **Module**: Core release packaging and verification only.
+- **Completed**: Replaced the metadata-sensitive inline ZIP command with a
+  deterministic builder that normalizes timestamps and ZIP metadata and sorts
+  archive entries. Added a default-gate regression that builds twice, changes
+  excluded directory metadata, checks an identical SHA-256, validates ZIP
+  integrity, and rejects forbidden release paths.
+- **Verified**: `composer test:release-package`, `composer test:all`,
+  `composer analyse:phpstan`, `composer release:verify`, and Composer metadata
+  validation passed. The reproducible Core 0.2.0 ZIP SHA-256 is
+  `73e5ee2e7b2e33ee0a00fdb2e00249d9aa16439dec3e0125556b594d79fe7fc3`.
+- **Next gate**: Install this exact ZIP on the M4 Docker host and verify Core
+  activation, schema provisioning, REST registration, and Toolkit integration
+  on the declared minimum and current WordPress/PHP profiles.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
 ## 2026-09-05 — Article-product direction parked
 
 - **Module**: Core-local historical decision documentation only.
