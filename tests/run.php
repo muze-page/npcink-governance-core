@@ -1831,6 +1831,7 @@ npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batc
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
 npcink_governance_core_assert( false !== strpos( $smoke_source, 'array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids )' ), 'Smoke shutdown cleanup tolerates early failure before fixture globals are populated.' );
 npcink_governance_core_assert( false !== strpos( $smoke_source, 'history cleanup removes the fixture or fills the bounded batch' ), 'History cleanup smoke respects bounded deletion when the site has an older backlog.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'No error message returned.' ), 'WordPress smoke reports REST error details for failed requests.' );
 npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'network_wide' ) && false !== strpos( $plugin_source, 'wp_initialize_site' ), 'Plugin lifecycle provisions multisite tables.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'OPTION_SCHEMA_VERSION' ) && false !== strpos( $plugin_source, 'maybe_upgrade_schema' ), 'Plugin lifecycle persists and checks schema version.' );
