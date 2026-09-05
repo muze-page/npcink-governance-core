@@ -4,14 +4,15 @@
 
 - **Module**: Core release packaging and verification only.
 - **Completed**: Replaced the metadata-sensitive inline ZIP command with a
-  deterministic builder that normalizes timestamps and ZIP metadata and sorts
-  archive entries. Added a default-gate regression that builds twice, changes
-  excluded directory metadata, checks an identical SHA-256, validates ZIP
-  integrity, and rejects forbidden release paths.
+  deterministic builder that packages only Git-tracked inputs, normalizes
+  timestamps and ZIP metadata, and sorts archive entries. Added a default-gate
+  regression that builds twice, changes excluded directory metadata, checks an
+  identical SHA-256, validates ZIP integrity, rejects forbidden release paths,
+  and proves that untracked workspace files cannot leak into the artifact.
 - **Verified**: `composer test:release-package`, `composer test:all`,
   `composer analyse:phpstan`, `composer release:verify`, and Composer metadata
   validation passed. The reproducible Core 0.2.0 ZIP SHA-256 is
-  `73e5ee2e7b2e33ee0a00fdb2e00249d9aa16439dec3e0125556b594d79fe7fc3`.
+  `6b87a88be3b7197d5a67aa4b5fea35764f896fdcf1331b7b0ed7039d2d85a59a`.
 - **Next gate**: Install this exact ZIP on the M4 Docker host and verify Core
   activation, schema provisioning, REST registration, and Toolkit integration
   on the declared minimum and current WordPress/PHP profiles.

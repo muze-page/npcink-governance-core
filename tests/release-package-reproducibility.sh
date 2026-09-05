@@ -4,14 +4,17 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ZIP_FILE="$ROOT_DIR/build/npcink-governance-core.zip"
 TIMESTAMP_REFERENCE="$(mktemp)"
+UNTRACKED_FIXTURE="$ROOT_DIR/.npcink-release-untracked-fixture"
 
 cleanup() {
 	touch -r "$TIMESTAMP_REFERENCE" "$ROOT_DIR/docs"
 	rm -f "$TIMESTAMP_REFERENCE"
+	rm -f "$UNTRACKED_FIXTURE"
 }
 trap cleanup EXIT
 
 touch -r "$ROOT_DIR/docs" "$TIMESTAMP_REFERENCE"
+touch "$UNTRACKED_FIXTURE"
 
 hash_zip() {
 	php -r 'echo hash_file("sha256", $argv[1]);' "$ZIP_FILE"
@@ -47,5 +50,10 @@ for forbidden in tests docs scripts stubs vendor .git .github; do
 		exit 1
 	fi
 done
+
+if unzip -Z1 "$ZIP_FILE" | grep -F 'npcink-governance-core/.npcink-release-untracked-fixture' >/dev/null; then
+	echo "Package contains an untracked workspace file." >&2
+	exit 1
+fi
 
 echo "Reproducible release package: ok ($second_sha256)"

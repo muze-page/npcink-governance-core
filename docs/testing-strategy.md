@@ -212,13 +212,15 @@ suite.
 
 ## Release Package Reproducibility
 
-`composer package:release` normalizes archive timestamps and metadata and writes
-entries in a stable order. `composer test:release-package` performs two builds
-from equivalent release contents, including a metadata change under excluded
+`composer package:release` selects only Git-tracked inputs, applies the release
+exclusion list, normalizes archive timestamps and metadata, and writes entries
+in a stable order. `composer test:release-package` performs two builds from
+equivalent release contents, including a metadata change under excluded
 `docs/`, and requires the ZIP SHA-256 values to match. It also verifies ZIP
-integrity, the single `npcink-governance-core/` root, and the release exclusion
-list. Keep this regression in `composer test:all`; a release checksum is not an
-artifact identity unless the same source can reproduce it.
+integrity, the single `npcink-governance-core/` root, release exclusions, and
+that an untracked workspace file cannot leak into the package. Keep this
+regression in `composer test:all`; a release checksum is not an artifact
+identity unless the same source can reproduce it.
 
 ## AI Write Classification Release Regression
 

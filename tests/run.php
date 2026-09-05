@@ -1813,11 +1813,11 @@ $prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
 $package_builder = npcink_governance_core_read( $root . '/scripts/build-release-package.sh' );
-foreach ( array( 'export TZ=UTC', 'touch -t 200001010000', 'LC_ALL=C sort', 'zip -Xq' ) as $required ) {
+foreach ( array( 'git ls-files -z', 'tar --null -T - -cf -', 'SOURCE_SNAPSHOT', 'export TZ=UTC', 'touch -t 200001010000', 'LC_ALL=C sort', 'zip -Xq' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $package_builder, $required ), 'Release package builder contains reproducibility control: ' . $required );
 }
 $package_reproducibility_test = npcink_governance_core_read( $root . '/tests/release-package-reproducibility.sh' );
-foreach ( array( 'first_sha256', 'second_sha256', 'unzip -tq', 'forbidden in tests docs scripts stubs vendor .git .github' ) as $required ) {
+foreach ( array( 'first_sha256', 'second_sha256', 'unzip -tq', 'forbidden in tests docs scripts stubs vendor .git .github', '.npcink-release-untracked-fixture' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $package_reproducibility_test, $required ), 'Release package regression contains required check: ' . $required );
 }
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );

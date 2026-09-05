@@ -31,7 +31,7 @@ not complete.
 ## Final Core Artifact
 
 - Path: `build/npcink-governance-core.zip`
-- SHA-256: `73e5ee2e7b2e33ee0a00fdb2e00249d9aa16439dec3e0125556b594d79fe7fc3`
+- SHA-256: `6b87a88be3b7197d5a67aa4b5fea35764f896fdcf1331b7b0ed7039d2d85a59a`
 - ZIP integrity: passed.
 - Reproducibility: two equivalent builds passed with the same SHA-256.
 
