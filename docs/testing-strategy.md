@@ -14,6 +14,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
+| M4 packaged WordPress smoke | `composer smoke:wp-m4` | Install the exact Core release ZIP into disposable minimum and current WordPress/PHP Docker profiles and emit revision-bound evidence. |
 | Optional eval-lab quality gate | `composer eval:lab -- --list`, `composer eval:project:review -- dry_run=true`, or `composer eval:gutenberg:judge -- dry_run=true limit=3` | Validate local AI-output evaluation wiring without making it a Core runtime or default test dependency. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
@@ -221,6 +222,28 @@ integrity, the single `npcink-governance-core/` root, release exclusions, and
 that an untracked workspace file cannot leak into the package. Keep this
 regression in `composer test:all`; a release checksum is not an artifact
 identity unless the same source can reproduce it.
+
+## M4 Packaged WordPress Smoke
+
+Run `composer smoke:wp-m4` only from clean Core and Toolkit checkouts. The
+runner sends Git archives plus the reproducible Core ZIP to the M4 host,
+installs that ZIP into disposable WordPress 6.9.4/PHP 8.0 and WordPress
+7.0/PHP 8.5 environments, runs the real Core smoke, and removes both Docker
+projects and the remote temporary directory. The ignored evidence file records
+the exact Core and Toolkit revisions and archive hashes, the Core package hash,
+Docker Server version, profile versions, ZIP-install posture, and assertion
+totals.
+
+Validate the evidence as part of release closeout with:
+
+```bash
+NPCINK_CORE_WORDPRESS_SMOKE_EVIDENCE="$PWD/dist/m4-wordpress-smoke-evidence.json" \
+composer release:verify:m4
+```
+
+The checker rejects evidence for a different Core or Toolkit revision, a
+different package, a missing or source-mounted profile, an invalid Docker
+identity, or evidence older than seven days.
 
 ## AI Write Classification Release Regression
 

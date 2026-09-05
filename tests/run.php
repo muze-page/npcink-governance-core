@@ -1797,7 +1797,7 @@ foreach (
 }
 
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
-foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'test:release-package', 'tests/release-package-reproducibility.sh', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'test:release-package', 'tests/release-package-reproducibility.sh', 'smoke:wp-m4', 'scripts/run-m4-wordpress-smoke.sh', 'test:wordpress-smoke-evidence', 'check:wordpress-smoke-evidence', 'release:verify:m4', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
 }
 $composer_data = json_decode( $composer_json, true );
