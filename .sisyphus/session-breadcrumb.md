@@ -5322,3 +5322,26 @@
   - Made shutdown cleanup safe after early failures and corrected the history cleanup smoke assertion for pre-existing backlogs larger than the bounded batch.
 - **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed against the exact clean Toolkit checkout.
 - **Next gate**: Re-run cross-repository release acceptance; Adapter must use a new version instead of reusing historical `v0.3.2`.
+
+# 2026-09-05 - Core 0.2.0 release candidate verification
+
+- **Module**: Cross-repository release verification and packaging evidence.
+- **Completed**:
+  - Prepared Adapter `0.3.3` and Toolkit `0.5.5` without moving historical tags.
+  - Passed Core packaging, real WordPress smoke, strict Plugin Check, signed
+    Adapter commit-and-cleanup acceptance, Toolkit source/PHPStan gates, and
+    the central six-repository quality matrix.
+  - Passed Toolkit compatibility smoke on M4 Docker 29.7.2 with WordPress
+    6.9.4/PHP 8.0 and WordPress 7.0/PHP 8.5, 441 assertions per profile.
+  - Generated `build/npcink-governance-core.zip` with SHA-256
+    `93349ce414596afb87154da8ba1c908554cd8434fb96f5a20e22a120616c2d8e`.
+- **Remaining release risks**:
+  - The monolithic cross-repository command exits only when its duplicate
+    Toolkit Docker leg reaches the unavailable local Docker socket; the same
+    compatibility legs passed on M4.
+  - Workflow Toolbox has unrelated uncommitted changes, so the stack cannot
+    yet claim a clean exact-source publication closeout.
+  - Candidate branches are not all published and no release tags were created.
+- **Next gate**: Resolve the Toolbox worktree, commit final evidence, rerun the
+  strict version matrix, then either restore local Docker for one monolithic
+  green run or formalize the revision-bound M4 Docker lane before tagging.
