@@ -1797,7 +1797,7 @@ foreach (
 }
 
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
-foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'test:release-package', 'tests/release-package-reproducibility.sh', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
 }
 $composer_data = json_decode( $composer_json, true );
@@ -1812,6 +1812,14 @@ npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'No error
 $prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare-release.sh' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
+$package_builder = npcink_governance_core_read( $root . '/scripts/build-release-package.sh' );
+foreach ( array( 'export TZ=UTC', 'touch -t 200001010000', 'LC_ALL=C sort', 'zip -Xq' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $package_builder, $required ), 'Release package builder contains reproducibility control: ' . $required );
+}
+$package_reproducibility_test = npcink_governance_core_read( $root . '/tests/release-package-reproducibility.sh' );
+foreach ( array( 'first_sha256', 'second_sha256', 'unzip -tq', 'forbidden in tests docs scripts stubs vendor .git .github' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $package_reproducibility_test, $required ), 'Release package regression contains required check: ' . $required );
+}
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
 $smoke_source = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );

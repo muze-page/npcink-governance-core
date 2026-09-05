@@ -17,6 +17,7 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Optional eval-lab quality gate | `composer eval:lab -- --list`, `composer eval:project:review -- dry_run=true`, or `composer eval:gutenberg:judge -- dry_run=true limit=3` | Validate local AI-output evaluation wiring without making it a Core runtime or default test dependency. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
+| Reproducible release package | `composer test:release-package` | Build the release ZIP twice, require an identical SHA-256, and verify archive integrity, root layout, and excluded paths. |
 | Cross-repo release acceptance | `composer acceptance:cross-repo-release` | Prove Core, Adapter, and Toolkit still compose as governance, channel, and ability layers before cross-repository release candidates. |
 | AI write classification release regression | Core `composer smoke:wp` plus the Toolbox local consent and article/media batch smokes | Reprove that editor-visible AI plugin acceptance stays outside Core, the narrow local consent featured-image path writes Core audit without proposals, and high-risk batch plans enter Core proposals without local consent events. |
 
@@ -208,6 +209,16 @@ rate-limit, and audit rows for the current run after assertions complete.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end
 suite.
+
+## Release Package Reproducibility
+
+`composer package:release` normalizes archive timestamps and metadata and writes
+entries in a stable order. `composer test:release-package` performs two builds
+from equivalent release contents, including a metadata change under excluded
+`docs/`, and requires the ZIP SHA-256 values to match. It also verifies ZIP
+integrity, the single `npcink-governance-core/` root, and the release exclusion
+list. Keep this regression in `composer test:all`; a release checksum is not an
+artifact identity unless the same source can reproduce it.
 
 ## AI Write Classification Release Regression
 

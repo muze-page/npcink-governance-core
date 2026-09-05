@@ -25,7 +25,8 @@
       "@test:contracts",
       "@test:fail-closed"
     ],
-    "package:release": "rm -rf build && mkdir -p build && rsync -a --delete --exclude-from=.distignore ./ build/npcink-governance-core/ && cd build && zip -qr npcink-governance-core.zip npcink-governance-core",
+    "package:release": "bash scripts/build-release-package.sh",
+    "test:release-package": "bash tests/release-package-reproducibility.sh",
     "prepare:release": "bash scripts/prepare-release.sh",
     "sync:wporg": "bash scripts/sync-wporg-svn.sh",
     "acceptance:cross-repo-release": "bash scripts/cross-repo-release-acceptance.sh",
@@ -38,7 +39,8 @@
     ],
     "test:all": [
       "@lint:php",
-      "@test"
+      "@test",
+      "@test:release-package"
     ]
   },
   "require-dev": {
