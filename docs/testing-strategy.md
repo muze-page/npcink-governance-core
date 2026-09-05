@@ -14,9 +14,11 @@ Npcink Governance Core starts with a small but strict test pyramid.
 | Fail-closed fault injection | `composer test:fail-closed` | Inject database and audit persistence failures against Core classes and assert rollback or cleanup. |
 | Full local suite | `composer test:all` | Run lint, static contracts, and fault injection together. |
 | Real WordPress smoke | `composer smoke:wp` | Prove activation, schema creation, REST behavior, and `npcink-abilities-toolkit` integration. |
+| M4 packaged WordPress smoke | `composer smoke:wp-m4` | Install the exact Core release ZIP into disposable minimum and current WordPress/PHP Docker profiles and emit revision-bound evidence. |
 | Optional eval-lab quality gate | `composer eval:lab -- --list`, `composer eval:project:review -- dry_run=true`, or `composer eval:gutenberg:judge -- dry_run=true limit=3` | Validate local AI-output evaluation wiring without making it a Core runtime or default test dependency. |
 | WordPress.org review guard | `composer check:wporg` | Catch locally reproducible reviewer policy patterns that Plugin Check may miss. |
 | Plugin Check release scan | `composer plugin-check:release` | Catch WordPress.org packaging and runtime security blockers before release. |
+| Reproducible release package | `composer test:release-package` | Build the release ZIP twice, require an identical SHA-256, and verify archive integrity, root layout, and excluded paths. |
 | Cross-repo release acceptance | `composer acceptance:cross-repo-release` | Prove Core, Adapter, and Toolkit still compose as governance, channel, and ability layers before cross-repository release candidates. |
 | AI write classification release regression | Core `composer smoke:wp` plus the Toolbox local consent and article/media batch smokes | Reprove that editor-visible AI plugin acceptance stays outside Core, the narrow local consent featured-image path writes Core audit without proposals, and high-risk batch plans enter Core proposals without local consent events. |
 
@@ -208,6 +210,40 @@ rate-limit, and audit rows for the current run after assertions complete.
 
 The smoke test should stay small. It is a confidence gate, not a full end-to-end
 suite.
+
+## Release Package Reproducibility
+
+`composer package:release` selects only Git-tracked inputs, applies the release
+exclusion list, normalizes archive timestamps and metadata, and writes entries
+in a stable order. `composer test:release-package` performs two builds from
+equivalent release contents, including a metadata change under excluded
+`docs/`, and requires the ZIP SHA-256 values to match. It also verifies ZIP
+integrity, the single `npcink-governance-core/` root, release exclusions, and
+that an untracked workspace file cannot leak into the package. Keep this
+regression in `composer test:all`; a release checksum is not an artifact
+identity unless the same source can reproduce it.
+
+## M4 Packaged WordPress Smoke
+
+Run `composer smoke:wp-m4` only from clean Core and Toolkit checkouts. The
+runner sends Git archives plus the reproducible Core ZIP to the M4 host,
+installs that ZIP into disposable WordPress 7.0/PHP 8.0 and WordPress
+7.0/PHP 8.5 environments, runs the real Core smoke, and removes both Docker
+projects and the remote temporary directory. The ignored evidence file records
+the exact Core and Toolkit revisions and archive hashes, the Core package hash,
+Docker Server version, profile versions, ZIP-install posture, and assertion
+totals.
+
+Validate the evidence as part of release closeout with:
+
+```bash
+NPCINK_CORE_WORDPRESS_SMOKE_EVIDENCE="$PWD/dist/m4-wordpress-smoke-evidence.json" \
+composer release:verify:m4
+```
+
+The checker rejects evidence for a different Core or Toolkit revision, a
+different package, a missing or source-mounted profile, an invalid Docker
+identity, or evidence older than seven days.
 
 ## AI Write Classification Release Regression
 

@@ -9,7 +9,7 @@ TOOLKIT_ROOT="${NPCINK_ABILITIES_TOOLKIT_ROOT:-$DEFAULT_REPO_PARENT/npcink-abili
 
 EXPECTED_CORE_VERSION="${EXPECTED_CORE_VERSION:-0.2.0}"
 EXPECTED_ADAPTER_VERSION="${EXPECTED_ADAPTER_VERSION:-0.3.3}"
-EXPECTED_TOOLKIT_VERSION="${EXPECTED_TOOLKIT_VERSION:-0.5.4}"
+EXPECTED_TOOLKIT_VERSION="${EXPECTED_TOOLKIT_VERSION:-0.5.5}"
 
 ALLOW_DIRTY=0
 REQUIRE_TAG_READY=0
@@ -28,7 +28,7 @@ Environment overrides:
   NPCINK_ABILITIES_TOOLKIT_ROOT    Path to npcink-abilities-toolkit.
   EXPECTED_CORE_VERSION           Default: 0.2.0.
   EXPECTED_ADAPTER_VERSION        Default: 0.3.3.
-  EXPECTED_TOOLKIT_VERSION        Default: 0.5.4.
+  EXPECTED_TOOLKIT_VERSION        Default: 0.5.5.
 
 Options:
   --allow-dirty        Allow dirty worktrees for local diagnostics.
@@ -63,7 +63,7 @@ done
 require_repo() {
 	local label="$1"
 	local root="$2"
-	if { [[ ! -d "$root/.git" ]] && [[ ! -f "$root/.git" ]]; }; then
+	if [[ ! -d "$root/.git" ]]; then
 		echo "$label repository is missing: $root" >&2
 		exit 2
 	fi

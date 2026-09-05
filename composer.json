@@ -15,10 +15,11 @@
     "analyse:phpstan": "vendor/bin/phpstan analyse --configuration=phpstan.neon.dist --no-progress --memory-limit=1G",
     "lint:php": "@php tests/lint.php",
     "smoke:wp": "bash tests/smoke-wp.sh",
+    "smoke:wp-m4": "bash scripts/run-m4-wordpress-smoke.sh",
     "test:contracts": "@php tests/run.php",
     "test:fail-closed": "@php tests/fail-closed.php",
     "check:wporg": "@php scripts/check-wordpress-org-review-rules.php",
-    "pr:publish": "bash scripts/publish-pr.sh",
+    "check:wordpress-smoke-evidence": "@php scripts/check-wordpress-smoke-evidence.php",
     "eval:lab": "sh scripts/eval-lab.sh",
     "eval:project:review": "sh scripts/eval-lab.sh task=project_boundary_review_triad \"project=$PWD\" project_label=npcink-governance-core contract=project_boundary_review_triad.v1 mode=working_diff",
     "eval:gutenberg:judge": "sh scripts/eval-lab.sh task=gutenberg_judge_cross",
@@ -26,10 +27,13 @@
       "@test:contracts",
       "@test:fail-closed"
     ],
-    "package:release": "rm -rf build && mkdir -p build && rsync -a --delete --exclude-from=.distignore ./ build/npcink-governance-core/ && cd build && zip -qr npcink-governance-core.zip npcink-governance-core",
+    "package:release": "bash scripts/build-release-package.sh",
+    "test:release-package": "bash tests/release-package-reproducibility.sh",
+    "test:wordpress-smoke-evidence": "@php tests/wordpress-smoke-evidence.php",
     "prepare:release": "bash scripts/prepare-release.sh",
     "sync:wporg": "bash scripts/sync-wporg-svn.sh",
     "acceptance:cross-repo-release": "bash scripts/cross-repo-release-acceptance.sh",
+    "pr:publish": "bash scripts/publish-pr.sh",
     "rc:version-matrix": "bash scripts/check-release-candidate-version-matrix.sh",
     "plugin-check:release": "bash scripts/plugin-check-release.sh",
     "release:verify": [
@@ -37,9 +41,15 @@
       "@check:wporg",
       "@plugin-check:release"
     ],
+    "release:verify:m4": [
+      "@release:verify",
+      "@check:wordpress-smoke-evidence"
+    ],
     "test:all": [
       "@lint:php",
-      "@test"
+      "@test",
+      "@test:release-package",
+      "@test:wordpress-smoke-evidence"
     ]
   },
   "require-dev": {

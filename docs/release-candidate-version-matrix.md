@@ -13,7 +13,7 @@ The current stack-level RC candidate is:
 | --- | --- | --- | --- | --- |
 | `npcink-governance-core` | Governance layer | `0.2.0` | `v0.2.0` | Available if the current Core commit is the release candidate. |
 | `npcink-ai-client-adapter` | Thin channel layer | `0.3.3` | `v0.3.3` | Available if the current Adapter commit is the release candidate. |
-| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.4` | `0.5.4` | Available if the current Toolkit commit is the release candidate. |
+| `npcink-abilities-toolkit` | Ability implementation layer | `0.5.5` | `0.5.5` | Available if the current Toolkit commit is the release candidate. |
 
 Run the machine check from Core:
 
@@ -37,9 +37,9 @@ paths before final publication:
 2. Keep the plugin version unchanged and create a clearly named stack RC
    snapshot tag that is not the conventional release tag.
 
-The previous Core `v0.1.0`, Adapter `v0.3.1`, and Toolkit `0.5.1` tags are
+The previous Core `v0.1.0`, Adapter `v0.3.2`, and Toolkit `0.5.1` tags are
 historical and must not be moved. The current matrix uses versions
-`0.2.0`, `0.3.3`, and `0.5.4` so final conventional release tags can be
+`0.2.0`, `0.3.3`, and `0.5.5` so final conventional release tags can be
 created after the full release gate passes.
 
 ## Required Gate Before Any Tag
@@ -67,7 +67,7 @@ Then create a tag name that cannot be mistaken for a plugin release tag, for
 example:
 
 ```bash
-git tag stack-rc-2026-09-04-core-0.2.0-adapter-0.3.3-toolkit-0.5.4
+git tag stack-rc-2026-09-05-core-0.2.0-adapter-0.3.3-toolkit-0.5.5
 ```
 
 Only push the tag after the exact matrix output and cross-repo acceptance result

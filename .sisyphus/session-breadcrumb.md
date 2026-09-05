@@ -1,5 +1,43 @@
 # Session Breadcrumb
 
+## 2026-09-05 — Reproducible Core release packaging
+
+- **Module**: Core release packaging and verification only.
+- **Completed**: Replaced the metadata-sensitive inline ZIP command with a
+  deterministic builder that packages only Git-tracked inputs, normalizes
+  timestamps and ZIP metadata, and sorts archive entries. Added a default-gate
+  regression that builds twice, changes excluded directory metadata, checks an
+  identical SHA-256, validates ZIP integrity, rejects forbidden release paths,
+  and proves that untracked workspace files cannot leak into the artifact.
+- **Verified**: `composer test:release-package`, `composer test:all`,
+  `composer analyse:phpstan`, `composer release:verify`, and Composer metadata
+  validation passed. The reproducible Core 0.2.0 ZIP SHA-256 is
+  `6b87a88be3b7197d5a67aa4b5fea35764f896fdcf1331b7b0ed7039d2d85a59a`.
+- **Next gate**: Install this exact ZIP on the M4 Docker host and verify Core
+  activation, schema provisioning, REST registration, and Toolkit integration
+  on the declared minimum and current WordPress/PHP profiles.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
+## 2026-09-05 — Article-product direction parked
+
+- **Module**: Core-local historical decision documentation only.
+- **Status**: The external-source adaptation and automatic resource-article
+  research is preserved, while further product development is paused until
+  the target user, recurring editorial job, automation boundary, and success
+  metric are clear.
+- **Evidence**: The existing stack has demonstrated source extraction,
+  writing-pack, native Gutenberg draft, and governed external-write paths.
+  Trial post `286721` was later published; post `286722` remains a draft. This
+  is a useful adoption signal, but not repeatable product validation.
+- **Next gate**: No article implementation is pending. If the direction is
+  reopened, first run a three-to-five-article, no-new-contract discovery pilot
+  and require repeated adoption before changing an owning product module.
+- **Boundary**: No REST route, plan schema, table, lifecycle state, workflow
+  runtime, queue, scheduler, provider ownership, article UX, or WordPress write
+  behavior was added to Core.
+
 ## 2026-07-14 — Fail-closed ability intake hardening
 
 - **Module**: Core ability discovery admission and governance service gates.
@@ -5294,3 +5332,36 @@
 - **Completed**: Updated active examples and commands from the historical `0.1.1` release to the current Core `0.2.0` candidate while preserving historical closeout records.
 - **Verification**: `composer test:all` and `composer validate --no-check-publish` passed.
 - **Next gate**: Cross-repository matrix remains blocked by dirty external worktrees.
+# 2026-09-05 - Exact Toolkit checkout smoke binding
+
+- **Module**: WordPress smoke dependency mounting and release matrix.
+- **Completed**:
+  - Smoke now mounts the configured Toolkit checkout when missing or broken and fails closed when an existing mount resolves elsewhere.
+  - Cross-repo acceptance explicitly exports the Toolkit checkout path.
+  - Updated the clean Toolkit release candidate expectation to `0.5.4`.
+  - Made shutdown cleanup safe after early failures and corrected the history cleanup smoke assertion for pre-existing backlogs larger than the bounded batch.
+- **Verification**: `composer test:all`, `composer analyse:phpstan`, and real WordPress smoke passed against the exact clean Toolkit checkout.
+- **Next gate**: Re-run cross-repository release acceptance; Adapter must use a new version instead of reusing historical `v0.3.2`.
+
+# 2026-09-05 - Core 0.2.0 release candidate verification
+
+- **Module**: Cross-repository release verification and packaging evidence.
+- **Completed**:
+  - Prepared Adapter `0.3.3` and Toolkit `0.5.5` without moving historical tags.
+  - Passed Core packaging, real WordPress smoke, strict Plugin Check, signed
+    Adapter commit-and-cleanup acceptance, Toolkit source/PHPStan gates, and
+    the central six-repository quality matrix.
+  - Passed Toolkit compatibility smoke on M4 Docker 29.7.2 with WordPress
+    6.9.4/PHP 8.0 and WordPress 7.0/PHP 8.5, 441 assertions per profile.
+  - Generated `build/npcink-governance-core.zip` with SHA-256
+    `93349ce414596afb87154da8ba1c908554cd8434fb96f5a20e22a120616c2d8e`.
+- **Remaining release risks**:
+  - The monolithic cross-repository command exits only when its duplicate
+    Toolkit Docker leg reaches the unavailable local Docker socket; the same
+    compatibility legs passed on M4.
+  - Workflow Toolbox has unrelated uncommitted changes, so the stack cannot
+    yet claim a clean exact-source publication closeout.
+  - Candidate branches are not all published and no release tags were created.
+- **Next gate**: Resolve the Toolbox worktree, commit final evidence, rerun the
+  strict version matrix, then either restore local Docker for one monolithic
+  green run or formalize the revision-bound M4 Docker lane before tagging.

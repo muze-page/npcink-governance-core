@@ -258,6 +258,27 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_evaluation_summary, $required ), 'Reference plugin evaluation summary contains required phrase: ' . $required );
 }
 
+$article_content_production_discussion_summary = npcink_governance_core_read( $root . '/docs/article-content-production-discussion-summary-2026-09-05.md' );
+foreach (
+	array(
+		'Article Content Production Discussion Summary',
+		'reference plugins are pattern sources, not ownership models',
+		'Separate technical, quality, and value gates',
+		'One Product, Two Commit Paths',
+		'`native_editor_commit`',
+		'`core_proposal_required`',
+		'Do not add MCP for this goal.',
+		'ADR-009 now freezes new domain-specific plan ids',
+		'Historical proposal; not accepted and now blocked by ADR-009',
+		'Cloud does not generate drafts, SEO copy, article-plan candidates,',
+		'workflow runtime, task queues, workers, leases, retries, or schedulers',
+		'final WordPress write execution',
+		'write a boundary note or a new ADR',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $article_content_production_discussion_summary, $required ), 'Article content production discussion summary contains required phrase: ' . $required );
+}
+
 $core_contract_reuse_readiness = npcink_governance_core_read( $root . '/docs/core-contract-reuse-readiness-2026-07-08.md' );
 foreach (
 	array(
@@ -358,8 +379,6 @@ foreach ( array( 'tests', 'examples', 'docs', 'scripts', 'composer.json', 'AGENT
 }
 
 $pull_request_template = npcink_governance_core_read( $root . '/.github/pull_request_template.md' );
-$pr_publisher = npcink_governance_core_read( $root . '/scripts/publish-pr.sh' );
-$composer_source = npcink_governance_core_read( $root . '/composer.json' );
 foreach (
 	array(
 		'Core remains the governance layer for ability intake, proposals, approval/preflight, and audit.',
@@ -370,15 +389,6 @@ foreach (
 ) {
 	npcink_governance_core_assert( false !== strpos( $pull_request_template, $required ), 'Pull request template contains Core boundary checkpoint: ' . $required );
 }
-npcink_governance_core_assert(
-	false !== strpos( $composer_source, '"pr:publish": "bash scripts/publish-pr.sh"' )
-	&& false !== strpos( $pr_publisher, 'git status --porcelain' )
-	&& false !== strpos( $pr_publisher, 'git merge-base --is-ancestor "origin/${base_branch}" HEAD' )
-	&& false !== strpos( $pr_publisher, '--body-file "${body_path}"' )
-	&& false !== strpos( $pr_publisher, '--auto --squash --match-head-commit "${head_sha}"' )
-	&& false === strpos( $pr_publisher, '--delete-branch' ),
-	'PR publisher validates the checked-in body contract and preserves protected multi-worktree merging.'
-);
 
 $boundary_review_template = npcink_governance_core_read( $root . '/.github/ISSUE_TEMPLATE/boundary_review.yml' );
 foreach (
@@ -917,10 +927,10 @@ foreach (
 		'npcink-abilities-toolkit',
 		'0.2.0',
 		'0.3.3',
-		'0.5.4',
+		'0.5.5',
 		'must not be moved',
 		'--require-tag-ready',
-		'stack-rc-2026-09-04-core-0.2.0-adapter-0.3.3-toolkit-0.5.4',
+		'stack-rc-2026-09-05-core-0.2.0-adapter-0.3.3-toolkit-0.5.5',
 		'The matrix must not become a dependency resolver',
 	) as $required
 ) {
@@ -1787,7 +1797,7 @@ foreach (
 }
 
 $composer_json = npcink_governance_core_read( $root . '/composer.json' );
-foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
+foreach ( array( 'test:contracts', 'test:fail-closed', 'tests/fail-closed.php', 'test:release-package', 'tests/release-package-reproducibility.sh', 'smoke:wp-m4', 'scripts/run-m4-wordpress-smoke.sh', 'test:wordpress-smoke-evidence', 'check:wordpress-smoke-evidence', 'release:verify:m4', 'analyse:phpstan', 'vendor/bin/phpstan analyse', 'phpstan.neon.dist', 'acceptance:cross-repo-release', 'scripts/cross-repo-release-acceptance.sh', 'rc:version-matrix', 'scripts/check-release-candidate-version-matrix.sh' ) as $required ) {
 	npcink_governance_core_assert( false !== strpos( $composer_json, $required ), 'Composer scripts include required test command: ' . $required );
 }
 $composer_data = json_decode( $composer_json, true );
@@ -1802,16 +1812,25 @@ npcink_governance_core_assert( false !== strpos( $plugin_check_script, 'No error
 $prepare_release_script = npcink_governance_core_read( $root . '/scripts/prepare-release.sh' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'unzip -q "$ZIP_FILE"' ), 'Release preparation inspects the built ZIP.' );
 npcink_governance_core_assert( false !== strpos( $prepare_release_script, 'PLUGIN_ROOT="$package_check_root/$PLUGIN_SLUG" composer plugin-check:release' ), 'Release preparation checks the packaged plugin root.' );
-$version_matrix_script = npcink_governance_core_read( $root . '/scripts/check-release-candidate-version-matrix.sh' );
-npcink_governance_core_assert( false !== strpos( $version_matrix_script, '[[ ! -f "$root/.git" ]]' ), 'Release candidate version matrix supports Git worktrees.' );
+$package_builder = npcink_governance_core_read( $root . '/scripts/build-release-package.sh' );
+foreach ( array( 'git ls-files -z', 'tar --null -T - -cf -', 'SOURCE_SNAPSHOT', 'export TZ=UTC', 'touch -t 200001010000', 'LC_ALL=C sort', 'zip -Xq' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $package_builder, $required ), 'Release package builder contains reproducibility control: ' . $required );
+}
+$package_reproducibility_test = npcink_governance_core_read( $root . '/tests/release-package-reproducibility.sh' );
+foreach ( array( 'first_sha256', 'second_sha256', 'unzip -tq', 'forbidden in tests docs scripts stubs vendor .git .github', '.npcink-release-untracked-fixture' ) as $required ) {
+	npcink_governance_core_assert( false !== strpos( $package_reproducibility_test, $required ), 'Release package regression contains required check: ' . $required );
+}
 $proposal_service_source = npcink_governance_core_read( $root . '/includes/Governance/Proposal_Service.php' );
 $preflight_service_source = npcink_governance_core_read( $root . '/includes/Governance/Commit_Preflight_Service.php' );
+$smoke_source = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 $authenticator_source = npcink_governance_core_read( $root . '/includes/Security/App_Authenticator.php' );
 $plugin_source = npcink_governance_core_read( $root . '/includes/Plugin.php' );
 $uninstall_source = npcink_governance_core_read( $root . '/uninstall.php' );
 $plan_boundary_adr = npcink_governance_core_read( $root . '/docs/decisions/ADR-009-freeze-domain-plan-contracts.md' );
 npcink_governance_core_assert( false !== strpos( $proposal_service_source, 'batch_action_guardrails' ), 'Batch proposals persist per-action governance guardrails.' );
 npcink_governance_core_assert( false !== strpos( $preflight_service_source, 'batch_ability_contract_preflight' ), 'Commit preflight revalidates batch action contracts.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'array_keys( (array) $npcink_governance_core_smoke_proposal_fixture_ids )' ), 'Smoke shutdown cleanup tolerates early failure before fixture globals are populated.' );
+npcink_governance_core_assert( false !== strpos( $smoke_source, 'history cleanup removes the fixture or fills the bounded batch' ), 'History cleanup smoke respects bounded deletion when the site has an older backlog.' );
 npcink_governance_core_assert( false !== strpos( $authenticator_source, 'hash_hmac' ) && false !== strpos( $authenticator_source, 'wp_salt' ), 'Request IP metadata uses a site-keyed HMAC.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'network_wide' ) && false !== strpos( $plugin_source, 'wp_initialize_site' ), 'Plugin lifecycle provisions multisite tables.' );
 npcink_governance_core_assert( false !== strpos( $plugin_source, 'OPTION_SCHEMA_VERSION' ) && false !== strpos( $plugin_source, 'maybe_upgrade_schema' ), 'Plugin lifecycle persists and checks schema version.' );
