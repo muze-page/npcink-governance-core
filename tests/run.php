@@ -1221,8 +1221,8 @@ npcink_governance_core_assert( 1 !== preg_match( '/SELECT app_id, app_label, key
 $app_rate_limiter = npcink_governance_core_read( $root . '/includes/Security/App_Rate_Limiter.php' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'npcink_governance_core_app_rate_limits' ), 'App rate limiter stores fixed-window counters.' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'app_route_window' ), 'App rate limiter has unique app route window key.' );
-npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'increment_existing_window' ), 'App rate limiter uses a conditional increment helper.' );
-npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count = request_count + 1' ), 'App rate limiter increments counters in SQL.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'ON DUPLICATE KEY UPDATE' ), 'App rate limiter uses an atomic upsert.' );
+npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count + 1' ), 'App rate limiter increments counters in SQL.' );
 npcink_governance_core_assert( false !== strpos( $app_rate_limiter, 'request_count < %d' ), 'App rate limiter only increments while under limit.' );
 
 $sensitive_data_redactor = npcink_governance_core_read( $root . '/includes/Security/Sensitive_Data_Redactor.php' );
