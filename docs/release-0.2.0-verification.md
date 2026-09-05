@@ -7,7 +7,7 @@ not complete.
 
 | Repository | Version | Revision | Conventional tag |
 | --- | --- | --- | --- |
-| Governance Core | `0.2.0` | `9771b9536e8c3a2029be0d5872acf4afe34c3b30` merged via protected PR #72 | `v0.2.0` available |
+| Governance Core | `0.2.0` | `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc` merged via protected PR #74 | `v0.2.0` available |
 | AI Client Adapter | `0.3.3` | `66ad29f044607bb0721d6cf542beae9584420e30` | `v0.3.3` available |
 | Abilities Toolkit | `0.5.5` | `3e237d91cbc1f135c559d47d1e20106aee62c1bb` | `0.5.5` available |
 
@@ -40,8 +40,8 @@ not complete.
 
 ## Post-Merge M4 Evidence
 
-- Source revision: `9771b9536e8c3a2029be0d5872acf4afe34c3b30`
-- Source archive SHA-256: `eb8b549095a42162998a131f2effdf79e1b2d27658c16f2fae8c7c52f78e635e`
+- Source revision: `35fc4eb6f4847d15a1e9ff70b96ae6c320b32cdc`
+- Source archive SHA-256: `60e2eed73df9c1d9382301ef877414f007783e95945c660df2ec28b3c6e00230`
 - Core package SHA-256: `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`
 - Toolkit archive SHA-256: `00af0bf9c7775c6722b40a4ba05d060c39afd007da3acb96a656f6be71edc777`
 - M4 Docker Server: `29.7.2`
@@ -53,8 +53,8 @@ not complete.
 1. Workflow Toolbox has unrelated uncommitted paths. Its test gate passed,
    but a clean exact-source stack closeout cannot be claimed until its owner
    resolves those changes.
-2. Adapter release work still requires protected PR closeout, and the Toolkit
-   release branch has no upstream. No release tag has been created or pushed.
+2. Core, Adapter, and Toolkit release tags have not been created or pushed;
+   final coordinated tagging remains pending.
 3. Local WP-CLI under PHP 8.5 emits repeated third-party color-library
    deprecation messages. They did not fail any product assertion, but they make
    release logs noisy and should be isolated or suppressed in CI tooling.
