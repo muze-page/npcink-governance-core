@@ -1,5 +1,25 @@
 # Session Breadcrumb
 
+## 2026-09-05 — M4 packaged Core smoke clean-log verification
+
+- **Module**: Core release artifact installation and WordPress compatibility
+  evidence.
+- **Completed**: Re-ran the exact Core ZIP from `4aaf3383ad33afcd6a12000e77e82078362c60cd`
+  on M4 Docker Server 29.7.2 using WordPress 7.0 with PHP 8.0 and 8.5.
+  Both profiles installed Core from ZIP and passed 1,426 assertions.
+- **Verified**: Evidence is bound to Core source archive
+  `fd9a4a87f8a80ad48fa09ff93ae0b26be7d92f70b079aa2cd371f14019712f2b`, Core
+  package `608676d35cc6ea1934513a9a76a822e3e62ca646339c67a62cd73845e5647e48`,
+  Toolkit archive `00af0bf9c7775c6722b40a4ba05d060c39afd007da3acb96a656f6be71edc777`,
+  and Docker Server `29.7.2`. No duplicate-key or WordPress database errors
+  appeared, and all remote Docker resources were cleaned up.
+- **Next gate**: Run final local quality gates, review the diff, then push this
+  topic branch and use a protected PR. Do not tag before exact post-merge
+  evidence is regenerated.
+- **Boundary**: No REST route, data shape, table, lifecycle, approval,
+  execution, workflow runtime, queue, provider credential, or product UX
+  behavior changed.
+
 ## 2026-09-05 — M4 packaged Core smoke accepted
 
 - **Module**: Core release artifact installation and WordPress compatibility
