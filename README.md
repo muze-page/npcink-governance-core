@@ -164,6 +164,7 @@ Core governance truth; check the Toolbox platform index before expanding them:
 - [Reference Plugin Deep Dive - 2026-07-06](docs/reference-plugin-deep-dive-2026-07-06.md)
 - [Reference Plugin Action Plan](docs/reference-plugin-action-plan.md)
 - [Reference Plugin Evaluation Development Summary - 2026-07-08](docs/reference-plugin-evaluation-development-summary-2026-07-08.md)
+- [Article Content Production Discussion Summary - 2026-09-05](docs/article-content-production-discussion-summary-2026-09-05.md)
 - [Core Admin Reference Notes - 2026-07](docs/core-admin-reference-notes-2026-07.md)
 - [Strategy And Product Split](docs/strategy-and-product-split.md)
 

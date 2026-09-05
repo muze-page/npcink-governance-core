@@ -258,6 +258,27 @@ foreach (
 	npcink_governance_core_assert( false !== strpos( $reference_plugin_evaluation_summary, $required ), 'Reference plugin evaluation summary contains required phrase: ' . $required );
 }
 
+$article_content_production_discussion_summary = npcink_governance_core_read( $root . '/docs/article-content-production-discussion-summary-2026-09-05.md' );
+foreach (
+	array(
+		'Article Content Production Discussion Summary',
+		'reference plugins are pattern sources, not ownership models',
+		'Separate technical, quality, and value gates',
+		'One Product, Two Commit Paths',
+		'`native_editor_commit`',
+		'`core_proposal_required`',
+		'Do not add MCP for this goal.',
+		'ADR-009 now freezes new domain-specific plan ids',
+		'Historical proposal; not accepted and now blocked by ADR-009',
+		'Cloud does not generate drafts, SEO copy, article-plan candidates,',
+		'workflow runtime, task queues, workers, leases, retries, or schedulers',
+		'final WordPress write execution',
+		'write a boundary note or a new ADR',
+	) as $required
+) {
+	npcink_governance_core_assert( false !== strpos( $article_content_production_discussion_summary, $required ), 'Article content production discussion summary contains required phrase: ' . $required );
+}
+
 $core_contract_reuse_readiness = npcink_governance_core_read( $root . '/docs/core-contract-reuse-readiness-2026-07-08.md' );
 foreach (
 	array(
