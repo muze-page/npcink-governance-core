@@ -103,6 +103,10 @@ if ( 2 !== substr_count( $runner, "sed -n '1,4000p'" ) ) {
 	fwrite( STDERR, "FAIL: Core M4 runner does not preserve both remote failure logs.\n" );
 	exit( 1 );
 }
+if ( false === strpos( $runner, 'git ls-files -z' ) || false === strpos( $runner, 'test-workspace.tar' ) ) {
+	fwrite( STDERR, "FAIL: Core M4 runner does not separate tracked test workspaces from distribution archives.\n" );
+	exit( 1 );
+}
 
 $profile_runner = file_get_contents( $root . '/scripts/m4-wordpress-package-profile.sh' );
 if ( false === $profile_runner || false === strpos( $profile_runner, 'plugin install' ) || false === strpos( $profile_runner, 'npcink-governance-core.zip --force --activate' ) ) {

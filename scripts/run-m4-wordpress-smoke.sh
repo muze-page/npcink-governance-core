@@ -28,8 +28,8 @@ source_revision="$(git -C "$ROOT_DIR" rev-parse HEAD)"
 toolkit_revision="$(git -C "$TOOLKIT_ROOT" rev-parse HEAD)"
 short_revision="${source_revision:0:12}"
 local_tmp="$(mktemp -d "${TMPDIR:-/tmp}/npcink-core-m4.XXXXXX")"
-core_archive="$local_tmp/core-source.tar"
-toolkit_archive="$local_tmp/toolkit-source.tar"
+core_archive="$local_tmp/core-test-workspace.tar"
+toolkit_archive="$local_tmp/toolkit-test-workspace.tar"
 package_copy="$local_tmp/npcink-governance-core.zip"
 minimum_log="$local_tmp/minimum-profile.log"
 current_log="$local_tmp/current-profile.log"
@@ -45,10 +45,16 @@ cleanup() {
 }
 trap cleanup EXIT
 
-git -C "$ROOT_DIR" archive --format=tar HEAD > "$core_archive"
-git -C "$TOOLKIT_ROOT" archive --format=tar HEAD > "$toolkit_archive"
-source_archive_sha256="$(shasum -a 256 "$core_archive" | awk '{print $1}')"
-toolkit_archive_sha256="$(shasum -a 256 "$toolkit_archive" | awk '{print $1}')"
+source_archive_sha256="$(git -C "$ROOT_DIR" archive --format=tar HEAD | shasum -a 256 | awk '{print $1}')"
+toolkit_archive_sha256="$(git -C "$TOOLKIT_ROOT" archive --format=tar HEAD | shasum -a 256 | awk '{print $1}')"
+(
+	cd "$ROOT_DIR"
+	git ls-files -z | tar --null -T - -cf "$core_archive"
+)
+(
+	cd "$TOOLKIT_ROOT"
+	git ls-files -z | tar --null -T - -cf "$toolkit_archive"
+)
 
 bash "$ROOT_DIR/scripts/build-release-package.sh" >/dev/null
 cp "$ROOT_DIR/build/npcink-governance-core.zip" "$package_copy"
@@ -61,7 +67,7 @@ if [[ "$remote_dir" != "$REMOTE_WORKSPACE_ROOT"/npcink-core-release.* ]]; then
 fi
 
 scp -q "$core_archive" "$toolkit_archive" "$package_copy" "$M4_HOST:$remote_dir/"
-ssh "$M4_HOST" "mkdir -p '$remote_dir/core' '$remote_dir/toolkit' && tar -xf '$remote_dir/core-source.tar' -C '$remote_dir/core' && tar -xf '$remote_dir/toolkit-source.tar' -C '$remote_dir/toolkit' && test \"\$(shasum -a 256 '$remote_dir/npcink-governance-core.zip' | awk '{print \$1}')\" = '$package_sha256'"
+ssh "$M4_HOST" "mkdir -p '$remote_dir/core' '$remote_dir/toolkit' && tar -xf '$remote_dir/core-test-workspace.tar' -C '$remote_dir/core' && tar -xf '$remote_dir/toolkit-test-workspace.tar' -C '$remote_dir/toolkit' && test \"\$(shasum -a 256 '$remote_dir/npcink-governance-core.zip' | awk '{print \$1}')\" = '$package_sha256'"
 docker_version="$(ssh "$M4_HOST" 'docker version --format "{{.Server.Version}}"')"
 
 if ! ssh "$M4_HOST" "cd '$remote_dir/core' && NPCINK_CORE_M4_TOOLKIT_ROOT='$remote_dir/toolkit' NPCINK_CORE_M4_PACKAGE='$remote_dir/npcink-governance-core.zip' NPCINK_CORE_M4_PROJECT_NAME='$minimum_project' NPCINK_CORE_M4_HTTP_PORT=8931 bash scripts/m4-wordpress-package-profile.sh" > "$minimum_log" 2>&1; then
