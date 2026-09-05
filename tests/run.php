@@ -1957,6 +1957,8 @@ npcink_governance_core_assert( false === strpos( $smoke_wp_sh, 'magick-ai-root' 
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'php-8.5.3+1' ), 'Local WP-CLI wrapper prefers the current LocalWP smoke PHP runtime.' );
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'display_errors=0' ), 'Local WP-CLI wrapper suppresses PHP display errors for release-smoke noise control.' );
 npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'pdo_mysql.default_socket' ), 'Local WP-CLI wrapper sets both mysqli and PDO MySQL sockets.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, 'LOCALWP_RUN_ROOT' ), 'Local WP-CLI wrapper supports an overridable LocalWP run root.' );
+npcink_governance_core_assert( false !== strpos( $wp_cli_local_sh, "-path '*/mysql/mysqld.sock'" ), 'Local WP-CLI wrapper discovers the active LocalWP MySQL socket when the legacy path is absent.' );
 
 $smoke_wp = npcink_governance_core_read( $root . '/tests/smoke-wp.php' );
 npcink_governance_core_assert( false !== strpos( $smoke_wp, 'NPCINK_ABILITIES_TOOLKIT_PATH' ), 'WordPress smoke can locate the shared npcink-abilities-toolkit repository explicitly.' );
